@@ -26,8 +26,9 @@ def gen(_camera: Camera) -> bytes:
     """
     while True:
         frame = _camera.get_frame()
+        _frame = next(frame)
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + _frame + b'\r\n')
 
 
 @camera.route('/video_stream')

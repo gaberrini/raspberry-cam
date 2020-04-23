@@ -7,6 +7,7 @@ try:
     import picamera
     PI_CAMERA_IMPORTED = True
 except ImportError:
+    print('Error importing picamera')
     pass
 
 
@@ -28,7 +29,8 @@ class TestCamera(object):
         Return a random test_image
         :return: random test_image
         """
-        return self.frames[int(time.time()) % 3]
+        while True:
+            yield self.frames[int(time.time()) % 3]
 
 
 class PiCamera(object):
