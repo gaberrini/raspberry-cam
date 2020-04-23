@@ -8,6 +8,6 @@ home = Blueprint('home', __name__, template_folder='templates')
 @home.route('/')
 def home_page():
     try:
-        return render_template('home.html')
+        return render_template('home.html', section='home')
     except TemplateNotFound:
         abort(404)
