@@ -58,7 +58,7 @@ To properly use [pipenv] in Raspbian we need to execute it as follow
 
 ## Environment variables
 
-The environment variable **FLASK_ENV** affect the running mode, if nothing is defined by default will be **production**, you can also define with the value of **development**.
+* **FLASK_ENV** affect the running mode, if nothing is defined by default will be **production**, you can also define with the value of **development**.
 
 ## Steps to run server
 

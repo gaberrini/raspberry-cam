@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    <div class="row">
+        <p class="text-break">
+            Welcome to Raspberry camera controller.
+            <br/>
+            You can see the live image from <a href="{{ url_for('home.home_page') }}">here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

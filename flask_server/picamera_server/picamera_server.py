@@ -1,6 +1,6 @@
 import os
 from picamera_server.config import FLASK_INSTANCE_FOLDER, SECRET_KEY
-from picamera_server.views.index import index_page
+from picamera_server.views.home import home
 from flask import Flask
 
 
@@ -14,6 +14,6 @@ def create_app():
     os.makedirs(app.instance_path, exist_ok=True)
 
     # Register Blueprints
-    app.register_blueprint(index_page)
+    app.register_blueprint(home)
 
     return app
