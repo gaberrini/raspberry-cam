@@ -32,7 +32,7 @@ This server is developed using Python 3.7 that comes with the Raspbian OS.
 
 To update the pip package manager we run
 
-`pip3 install -U pip`
+`python3 -m pip install -U pip`
 
 To properly use pip3 in Raspbian is better to run it using
 
@@ -53,6 +53,91 @@ To install it run
 To properly use [pipenv] in Raspbian we need to execute it as follow
 
 `python3 -m pipenv`
+
+# Running server
+
+## Environment variables
+
+The environment variable **FLASK_ENV** affect the running mode, if nothing is defined by default will be **production**, you can also define with the value of **development**.
+
+## Steps to run server
+
+The code comes with scripts to run that will help to setup the system for the server and run it.
+
+All the scripts must be run from the parent directory
+
+`./`
+
+When trying to run the scripts might be possible that they don't have execution rights, you can add them to all the scripts with the following command
+
+`chmod +x ./scripts/*`
+
+### 1) System setup
+
+To setup the Raspbian OS to run the server you should update the OS packages and pip package manager.
+
+For this step you can run the script
+
+`./scripts/setup_system_env.sh`
+
+The command lines to do this are:
+
+```
+# Update system packages
+sudo apt-get update
+# Upgrade pip
+python3 -m pip install -U pip
+# Install pipenv
+python3 -m pip install pipenv
+```
+
+### 2) Python environment setup
+
+To setup the python environment to run the server you can run the following script
+
+`./scripts/install_server_requirements.sh`
+
+The command lines to do this are:
+
+```
+# Move to the project folder
+cd ./flask_server
+# Install pipenv packages
+python3 -m pipenv install
+```
+
+### 3) Run server
+
+#### Development mode
+
+After installing all the requirements you can run the server with the following script
+
+`./scripts/run_server.sh`
+
+This script will run the server in development mode with the following commands
+
+```
+# Move to the project folder
+cd ./flask_server
+# This script must be runned after install_server_requirements.sh
+export FLASK_ENV=development
+python3 -m pipenv run python main.py -debug
+```
+
+### Optional - cleanup virtualenv
+
+If we want to cleanup the created virtualenv we can do it with the script
+
+`./scripts/clean_up_environment.sh`
+
+The script will run the following commands:
+
+```
+# Move to the project folder
+cd ./flask_server
+# Remove pipenv
+python3 -m pipenv --rm
+```
 
 
 [Raspberry Pi 3 B+]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/
