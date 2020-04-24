@@ -124,6 +124,8 @@ export FLASK_ENV=development
 python3 -m pipenv run python main.py -debug
 ```
 
+The `run_server.sh` script will run the server in debug mode.
+
 ### Optional - cleanup virtualenv
 
 If we want to cleanup the created virtualenv we can do it with the script
