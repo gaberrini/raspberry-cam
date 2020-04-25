@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 flask = "*"
-picamera = "*"
+picamera = {version = "*", sys_platform = "== 'linux'"}
 
 [requires]
 python_version = "3.7"
