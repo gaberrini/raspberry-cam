@@ -2,4 +2,4 @@
 # Move to the project folder
 cd ./flask_server
 # Install pipenv packages
-python3 -m pipenv install
+python3 -m pipenv install --dev

@@ -1,18 +1,17 @@
 import io
 import os
 import time
-from picamera_server.views.utils.singleton import Singleton
 from picamera_server.config import STATIC_FILES_PATH
 PI_CAMERA_IMPORTED = False
 try:
     import picamera
+    from picamera.exc import PiCameraMMALError
     PI_CAMERA_IMPORTED = True
 except ImportError:
     print('Error importing picamera')
-    pass
 
 
-class TestCamera(object, metaclass=Singleton):
+class TestCamera(object):
     """
         An emulated camera implementation that streams a repeated sequence of
         files [1.jpg, 2.jpg and 3.jpg] at a rate of one frame per second.
@@ -35,26 +34,84 @@ class TestCamera(object, metaclass=Singleton):
 
 
 class PiCamera(object):
+    """
+    PiCamera control class, Singleton made to control the camera resource, which can be initialized only 1 time.
+    If it's initialized multiple times "picamera.PiCamera()" will raise a PiCameraMMALError exception.
+    """
 
-    @staticmethod
-    def get_frame() -> bytes:
+    CAPTURE_FORMAT = 'jpeg'
+
+    def __init__(self):
+        self.camera = picamera.PiCamera()
+
+    def _is_camera_enabled(self) -> bool:
         """
-        Return the current frame from the picamera
+        Return if the camera is enabled
+        :return: True if camera is enabled, False otherwise
+        """
+        return not self.camera.closed
+
+    def _enable_camera(self) -> None:
+        """
+        Enable the camera hardware
+        :raises PiCameraMMALError: Exception when camera resources are not free
         :return:
         """
-        with picamera.PiCamera() as camera:
-            # let camera warm up
-            time.sleep(2)
+        if not self._is_camera_enabled():
+            try:
+                self.camera.__init__()
+            except PiCameraMMALError as e:
+                print('Error enabling camera, looks like it was already enabled. \n {}'.format(e))
+                self.camera.close()
+                raise e
 
-            stream = io.BytesIO()
-            for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-                # return current frame
-                stream.seek(0)
-                yield stream.read()
+    def _close_camera(self) -> None:
+        """
+        Disable the camera
+        :return:
+        """
+        self.camera.close()
+        return
 
-                # reset stream for next frame
-                stream.seek(0)
-                stream.truncate()
+    def _get_frame(self) -> bytes:
+        """
+        Get a frame from the camera and return it
+        :return:
+        """
+        stream = io.BytesIO()
+        self.camera.capture(stream, format=self.CAPTURE_FORMAT)
+        stream.seek(0)
+        return stream.read()
+
+    def get_frame(self):
+        """
+        Return a frame taken from the camera
+        :return:
+        """
+        if not self._is_camera_enabled():
+            self._enable_camera()
+        frame = self._get_frame()
+        return frame
 
 
 Camera = PiCamera if PI_CAMERA_IMPORTED else TestCamera
+
+camera_controller = None
+
+
+def init_camera_controller():
+    """
+    Init the camera controller. Should be run only once
+    :return:
+    """
+    global camera_controller
+    print('Starting camera controller')
+    camera_controller = Camera()
+
+
+def get_camera_controller() -> Camera:
+    """
+    Return the camera controller.
+    :return:
+    """
+    return camera_controller
