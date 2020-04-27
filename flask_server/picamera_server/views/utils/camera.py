@@ -77,7 +77,8 @@ class PiCamera(object):
 
     def _get_frame(self) -> bytes:
         """
-        Get a frame from the camera and return it
+        Get a frame from the camera and return it, to capture the frame the camera lock will be acquire and release
+        when capture finish
         :return:
         """
         self.lock.acquire()
@@ -92,8 +93,7 @@ class PiCamera(object):
         Return a frame taken from the camera
         :return:
         """
-        if not self._is_camera_enabled():
-            self._enable_camera()
+        self._enable_camera()
         frame = self._get_frame()
         return frame
 
