@@ -25,8 +25,7 @@ def gen(_camera: Camera) -> bytes:
     :return: --frame (image/jpeg) part of a multipart responses
     """
     while True:
-        frame = _camera.get_frame()
-        _frame = next(frame)
+        _frame = _camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + _frame + b'\r\n')
 

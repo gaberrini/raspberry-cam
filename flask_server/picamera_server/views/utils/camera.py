@@ -1,6 +1,7 @@
 import io
 import os
 import time
+from picamera_server.views.utils.singleton import Singleton
 from picamera_server.config import STATIC_FILES_PATH
 PI_CAMERA_IMPORTED = False
 try:
@@ -11,7 +12,7 @@ except ImportError:
     pass
 
 
-class TestCamera(object):
+class TestCamera(object, metaclass=Singleton):
     """
         An emulated camera implementation that streams a repeated sequence of
         files [1.jpg, 2.jpg and 3.jpg] at a rate of one frame per second.
@@ -29,8 +30,8 @@ class TestCamera(object):
         Return a random test_image
         :return: random test_image
         """
-        while True:
-            yield self.frames[int(time.time()) % 3]
+        time.sleep(1)
+        return self.frames[int(time.time()) % 3]
 
 
 class PiCamera(object):
