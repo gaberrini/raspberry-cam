@@ -1,6 +1,7 @@
 import io
 import os
 import time
+import threading
 from picamera_server.config import STATIC_FILES_PATH
 PI_CAMERA_IMPORTED = False
 try:
@@ -43,6 +44,7 @@ class PiCamera(object):
 
     def __init__(self):
         self.camera = picamera.PiCamera()
+        self.lock = threading.Lock()
 
     def _is_camera_enabled(self) -> bool:
         """
@@ -78,8 +80,10 @@ class PiCamera(object):
         Get a frame from the camera and return it
         :return:
         """
+        self.lock.acquire()
         stream = io.BytesIO()
         self.camera.capture(stream, format=self.CAPTURE_FORMAT)
+        self.lock.release()
         stream.seek(0)
         return stream.read()
 
