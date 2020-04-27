@@ -1,4 +1,4 @@
-from picamera_server.views.utils.camera import Camera
+from picamera_server.views.utils.camera import Camera, get_camera_controller
 from flask import Blueprint, abort, render_template, Response
 from jinja2 import TemplateNotFound
 
@@ -25,8 +25,7 @@ def gen(_camera: Camera) -> bytes:
     :return: --frame (image/jpeg) part of a multipart responses
     """
     while True:
-        frame = _camera.get_frame()
-        _frame = next(frame)
+        _frame = _camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + _frame + b'\r\n')
 
@@ -37,5 +36,5 @@ def video_stream():
     Endpoint used to feed the video stream with multipart responses
     :return:
     """
-    return Response(gen(Camera()),
+    return Response(gen(get_camera_controller()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')

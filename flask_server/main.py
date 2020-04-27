@@ -9,7 +9,7 @@ def main():
         debug = True
 
     app = create_app()
-    app.run(host=SERVER_HOST, port=SERVER_PORT, debug=debug)
+    app.run(host=SERVER_HOST, port=SERVER_PORT, debug=debug, use_reloader=False)
 
 
 if __name__ == '__main__':
