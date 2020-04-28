@@ -2,6 +2,7 @@ import io
 import os
 import time
 import threading
+from typing import Union
 from picamera_server.config import STATIC_FILES_PATH, DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
     MAX_CAPTURE_INTERVAL
 from picamera_server.views.helpers.singleton import Singleton
@@ -124,13 +125,39 @@ class CaptureController(object, metaclass=Singleton):
     min value of MIN_CAPTURE_INTERVAL and max value of MAX_CAPTURE_INTERVAL
     """
 
-    DEFAULT_CAPTURE_INTERVAL: int = DEFAULT_CAPTURE_INTERVAL
+    CAPTURE_INTERVAL: int = DEFAULT_CAPTURE_INTERVAL
     MAX_CAPTURE_INTERVAL: int = MAX_CAPTURE_INTERVAL
     MIN_CAPTURE_INTERVAL: int = MIN_CAPTURE_INTERVAL
 
     def __init__(self):
         print('New Camera capture class')
         return
+
+    def _valid_capture_interval(self, capture_interval: Union[str, int]) -> bool:
+        """
+        Validate if a value is a valid capture interval
+
+        :param capture_interval:
+        :return: True if is valid, False otherwise
+        """
+        return bool(str(capture_interval).isnumeric() and
+                    (self.MAX_CAPTURE_INTERVAL > int(capture_interval) > self.MIN_CAPTURE_INTERVAL))
+
+    def update_capture_interval(self, capture_interval: Union[str, int]) -> None:
+        """
+        Update the CAPTURE_INTERVAL value, the function will validate if the value meet the expectations,
+        which are:
+            - int value
+            - bigger than self.MIN_CAPTURE_INTERVAL
+            - smaller than self.MAX_CAPTURE_INTERVAL
+        :param capture_interval:
+        :raises ValueError: if capture interval is invalid
+        :return:
+        """
+        if self._valid_capture_interval(capture_interval):
+            self.CAPTURE_INTERVAL = int(capture_interval)
+        else:
+            raise ValueError('Invalid capture interval value')
 
 
 # Define the Camera class based on the fact if picamera has been imported
