@@ -19,6 +19,9 @@ class TestCamera(object):
     """
 
     def __init__(self):
+        """
+        Load the test images to be return when test frames are fetched
+        """
         test_images_paths = [os.path.join(STATIC_FILES_PATH, 'test_images', number + '.jpg') for number in ['1',
                                                                                                             '2',
                                                                                                             '3']]
@@ -36,7 +39,7 @@ class TestCamera(object):
 
 class PiCamera(object):
     """
-    PiCamera control class, Singleton made to control the camera resource, which can be initialized only 1 time.
+    PiCamera control class, made to control the camera resource, which can be initialized only 1 time.
     If it's initialized multiple times "picamera.PiCamera()" will raise a PiCameraMMALError exception.
     """
 
@@ -75,26 +78,27 @@ class PiCamera(object):
         self.camera.close()
         return
 
-    def _get_frame(self) -> bytes:
+    def _get_frame(self, _format: str = 'jpeg') -> bytes:
         """
         Get a frame from the camera and return it, to capture the frame the camera lock will be acquire and release
-        when capture finish
+        when capture finish to avoid exception because resource is already in use
+        :param _format: Format of the image, default 'jpeg'. Options: ['jpeg', 'png', 'gif', 'bmp', 'raw', 'bgr, 'bgra']
         :return:
         """
         self.lock.acquire()
         stream = io.BytesIO()
-        self.camera.capture(stream, format=self.CAPTURE_FORMAT)
+        self.camera.capture(stream, format=_format)
         self.lock.release()
         stream.seek(0)
         return stream.read()
 
-    def get_frame(self):
+    def get_frame(self) -> bytes:
         """
         Return a frame taken from the camera
         :return:
         """
         self._enable_camera()
-        frame = self._get_frame()
+        frame = self._get_frame(self.CAPTURE_FORMAT)
         return frame
 
 

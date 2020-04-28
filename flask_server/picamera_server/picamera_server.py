@@ -6,7 +6,13 @@ from picamera_server.views.utils.camera import init_camera_controller
 from flask import Flask
 
 
-def create_app():
+def create_app() -> Flask:
+    """
+    Initialize the camera controller and
+    Configure the Flask app
+
+    :return: Flask app
+    """
     init_camera_controller()
 
     # Create and configure the app

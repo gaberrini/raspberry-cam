@@ -4,6 +4,11 @@ from picamera_server.config import SERVER_HOST, SERVER_PORT
 
 
 def main():
+    """
+    Init the Flask App and run the server
+
+    :return:
+    """
     debug = False
     if '-debug' in sys.argv:
         debug = True
