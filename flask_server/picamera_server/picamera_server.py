@@ -2,7 +2,7 @@ import os
 from picamera_server.config import FLASK_INSTANCE_FOLDER, SECRET_KEY
 from picamera_server.views.home import home
 from picamera_server.views.camera import camera
-from picamera_server.views.utils.camera import init_camera_controller
+from picamera_server.views.utils.camera import init_controllers
 from flask import Flask
 
 
@@ -13,7 +13,7 @@ def create_app() -> Flask:
 
     :return: Flask app
     """
-    init_camera_controller()
+    init_controllers()
 
     # Create and configure the app
     app = Flask(__name__, instance_path=FLASK_INSTANCE_FOLDER)

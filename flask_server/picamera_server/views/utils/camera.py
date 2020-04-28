@@ -2,7 +2,9 @@ import io
 import os
 import time
 import threading
-from picamera_server.config import STATIC_FILES_PATH
+from picamera_server.config import STATIC_FILES_PATH, DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
+    MAX_CAPTURE_INTERVAL
+from picamera_server.views.helpers.singleton import Singleton
 
 PI_CAMERA_IMPORTED = False
 try:
@@ -13,7 +15,11 @@ except ImportError:
     print('Error importing picamera')
 
 
-class TestCamera(object):
+CAMERA_CONTROLLER = None
+CAPTURE_CONTROLLER = None
+
+
+class TestCamera(object, metaclass=Singleton):
     """
         An emulated camera implementation that streams a repeated sequence of
         files [1.jpg, 2.jpg and 3.jpg] at a rate of one frame per second.
@@ -45,7 +51,7 @@ class TestCamera(object):
         return _frame
 
 
-class PiCamera(object):
+class PiCamera(object, metaclass=Singleton):
     """
     PiCamera control class, made to control the camera resource, which can be initialized only 1 time.
     If it's initialized multiple times "picamera.PiCamera()" will raise a PiCameraMMALError exception.
@@ -111,19 +117,35 @@ class PiCamera(object):
         return frame
 
 
+class CaptureController(object, metaclass=Singleton):
+    """
+    Class to manage capture mode using the global camera controller.
+    Capture mode allows to capture images from the camera with a specific time interval, the interval can go to a
+    min value of MIN_CAPTURE_INTERVAL and max value of MAX_CAPTURE_INTERVAL
+    """
+
+    DEFAULT_CAPTURE_INTERVAL: int = DEFAULT_CAPTURE_INTERVAL
+    MAX_CAPTURE_INTERVAL: int = MAX_CAPTURE_INTERVAL
+    MIN_CAPTURE_INTERVAL: int = MIN_CAPTURE_INTERVAL
+
+    def __init__(self):
+        print('New Camera capture class')
+        return
+
+
+# Define the Camera class based on the fact if picamera has been imported
 Camera = PiCamera if PI_CAMERA_IMPORTED else TestCamera
 
-camera_controller = None
 
-
-def init_camera_controller():
+def init_controllers():
     """
-    Init the camera controller. Should be run only once
+    Init the camera and capture controller. Should be run only once
     :return:
     """
-    global camera_controller
-    print('Starting camera controller')
-    camera_controller = Camera()
+    global CAMERA_CONTROLLER, CAPTURE_CONTROLLER
+    print('Starting camera and capture controller')
+    CAMERA_CONTROLLER = Camera()
+    CAPTURE_CONTROLLER = CaptureController()
 
 
 def get_camera_controller() -> Camera:
@@ -131,4 +153,12 @@ def get_camera_controller() -> Camera:
     Return the camera controller.
     :return:
     """
-    return camera_controller
+    return CAMERA_CONTROLLER
+
+
+def get_capture_controller() -> CaptureController:
+    """
+    Return the capture controller.
+    :return:
+    """
+    return CAPTURE_CONTROLLER

@@ -1,4 +1,4 @@
-from picamera_server.views.utils.camera import Camera, get_camera_controller
+from picamera_server.views.utils.camera import Camera, get_camera_controller, get_capture_controller
 from flask import Blueprint, abort, render_template, Response
 from jinja2 import TemplateNotFound
 
@@ -47,6 +47,12 @@ def capture():
     :return:
     """
     try:
-        return render_template('camera/capture.html', section='capture')
+        capture_controller = get_capture_controller()
+        data = {
+            'default_interval': capture_controller.DEFAULT_CAPTURE_INTERVAL,
+            'min_interval': capture_controller.MIN_CAPTURE_INTERVAL,
+            'max_interval': capture_controller.MAX_CAPTURE_INTERVAL
+        }
+        return render_template('camera/capture.html', section='capture', data=data)
     except TemplateNotFound:
         abort(404)
