@@ -2,7 +2,7 @@ import os
 from picamera_server.config import FLASK_INSTANCE_FOLDER, SECRET_KEY
 from picamera_server.views.home import home
 from picamera_server.views.camera import camera
-from picamera_server.views.utils.camera import init_controllers
+from picamera_server.views.utils.camera.camera import init_controllers
 from flask import Flask
 
 
