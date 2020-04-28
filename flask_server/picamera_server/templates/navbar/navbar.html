@@ -13,6 +13,9 @@
             {% with item_title='Stream', item_href=url_for('camera.stream') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
+            {% with item_title='Capture', item_href=url_for('camera.capture') %}
+                {% include 'navbar/navbar-item.html' %}
+            {% endwith %}
         </ul>
     </div>
 </nav>

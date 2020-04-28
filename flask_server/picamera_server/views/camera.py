@@ -38,3 +38,15 @@ def video_stream():
     """
     return Response(gen(get_camera_controller()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@camera.route('/capture')
+def capture():
+    """
+    Return the web interface to manage the capture mode
+    :return:
+    """
+    try:
+        return render_template('camera/capture.html', section='capture')
+    except TemplateNotFound:
+        abort(404)

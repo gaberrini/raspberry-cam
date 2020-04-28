@@ -23,11 +23,15 @@ class TestCamera(object):
         """
         Load the test images to be return when test frames are fetched
         """
+        print('Initializing test camera controller')
+
         test_images_paths = [os.path.join(STATIC_FILES_PATH, 'test_images', number + '.jpg') for number in ['1',
                                                                                                             '2',
                                                                                                             '3']]
         # Cache images to return
         self.frames = [open(file, 'rb').read() for file in test_images_paths]
+        # To simulate hardware camera behaviour
+        self.lock = threading.Lock()
 
     def get_frame(self) -> bytes:
         """
@@ -35,7 +39,10 @@ class TestCamera(object):
         :return: random test_image
         """
         time.sleep(1)
-        return self.frames[int(time.time()) % 3]
+        self.lock.acquire()
+        _frame = self.frames[int(time.time()) % 3]
+        self.lock.release()
+        return _frame
 
 
 class PiCamera(object):
@@ -47,6 +54,7 @@ class PiCamera(object):
     CAPTURE_FORMAT = 'jpeg'
 
     def __init__(self):
+        print('Initializing camera controller')
         self.camera = picamera.PiCamera()
         self.lock = threading.Lock()
 
