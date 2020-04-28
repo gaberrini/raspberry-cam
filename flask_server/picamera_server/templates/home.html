@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block body %}
 <div class="container">
-    <div class="row">
-        <p class="text-break">
-            Welcome to Raspberry camera controller.
-            <br/>
-            You can see the live image from <a href="{{ url_for('camera.stream') }}">here</a>
-        </p>
+    <div class="m-bot-25">
+        <h1>Welcome to Raspberry Camera Controller.</h1>
+        <p class="font-weight-bold">The server has been made to manage the
+            <a href="https://www.raspberrypi.org/products/camera-module-v2/">Camera module v2</a>,
+            to be able to run properly you need to activate the camera, here you can find the
+            <a href="https://www.raspberrypi.org/documentation/usage/camera/">instructions to enable it</a>.</p>
+    </div>
+    <div class="m-bot-25">
+        <p class="font-weight-bold">You can see the live image from <a href="{{ url_for('camera.stream') }}">here</a></p>
+    </div>
+    <div class="m-bot-25">
+        <p class="font-weight-bold">You can configure the capture mode from <a href="{{ url_for('camera.capture') }}">here</a></p>
     </div>
 </div>
 {% endblock %}
