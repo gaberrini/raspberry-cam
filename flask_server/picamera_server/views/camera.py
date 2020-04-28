@@ -1,5 +1,5 @@
 from picamera_server.views.utils.camera import Camera, get_camera_controller, get_capture_controller
-from flask import Blueprint, abort, render_template, Response, request, jsonify
+from flask import Blueprint, abort, render_template, Response, request, url_for, redirect
 from jinja2 import TemplateNotFound
 
 
@@ -48,11 +48,7 @@ def capture():
     """
     try:
         capture_controller = get_capture_controller()
-        data = {
-            'capture_interval': capture_controller.CAPTURE_INTERVAL,
-            'min_interval': capture_controller.MIN_CAPTURE_INTERVAL,
-            'max_interval': capture_controller.MAX_CAPTURE_INTERVAL
-        }
+        data = capture_controller.get_interval_values()
         return render_template('camera/capture.html', section='capture', data=data)
     except TemplateNotFound:
         abort(404)
@@ -78,7 +74,7 @@ def config_capture_interval():
     :return:
     """
     capture_controller = get_capture_controller()
-    capture_interval = request.args.get('capture_interval', '')
+    capture_interval = request.form.get('capture_interval', '')
 
     try:
         capture_controller.update_capture_interval(capture_interval)
@@ -88,4 +84,4 @@ def config_capture_interval():
               .format(capture_controller.MIN_CAPTURE_INTERVAL, capture_controller.MAX_CAPTURE_INTERVAL,
                       capture_interval))
 
-    return jsonify({'capture_interval': capture_interval})
+    return redirect(url_for('camera.capture'))

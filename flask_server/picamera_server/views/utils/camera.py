@@ -141,7 +141,7 @@ class CaptureController(object, metaclass=Singleton):
         :return: True if is valid, False otherwise
         """
         return bool(str(capture_interval).isnumeric() and
-                    (self.MAX_CAPTURE_INTERVAL > int(capture_interval) > self.MIN_CAPTURE_INTERVAL))
+                    (self.MAX_CAPTURE_INTERVAL >= int(capture_interval) >= self.MIN_CAPTURE_INTERVAL))
 
     def update_capture_interval(self, capture_interval: Union[str, int]) -> None:
         """
@@ -158,6 +158,20 @@ class CaptureController(object, metaclass=Singleton):
             self.CAPTURE_INTERVAL = int(capture_interval)
         else:
             raise ValueError('Invalid capture interval value')
+
+    def get_interval_values(self) -> dict:
+        """
+        Return the values for the interval as a dict.
+        Values returned:
+            - capture_interval
+            - max_interval
+            - min_interval
+
+        :return:
+        """
+        return {'capture_interval': self.CAPTURE_INTERVAL,
+                'min_interval': self.MIN_CAPTURE_INTERVAL,
+                'max_interval': self.MAX_CAPTURE_INTERVAL}
 
 
 # Define the Camera class based on the fact if picamera has been imported
