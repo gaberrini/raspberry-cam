@@ -3,6 +3,7 @@ import os
 import time
 import threading
 from picamera_server.config import STATIC_FILES_PATH
+
 PI_CAMERA_IMPORTED = False
 try:
     import picamera

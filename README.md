@@ -20,6 +20,7 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
         * [Python environment setup](#2-python-environment-setup)
         * [Run server](#3-run-server)
             * [Development mode](#development-mode)
+            * [Development environment](#development-environment)
         * [Optional - cleanup virtualenv](#optional---cleanup-virtualenv)
 
 # Server features
@@ -163,6 +164,10 @@ python3 -m pipenv run python main.py -debug
 ```
 
 The `run_server.sh` script will run the server in debug mode.
+
+#### Development environment
+
+If you run the server in a development environment like a Windows machine, there will be a **`TestCamera class`** defined to simulate a camera and be able to test the server and validate its features.
 
 ### Optional - cleanup virtualenv
 
