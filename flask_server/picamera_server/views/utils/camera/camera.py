@@ -4,7 +4,7 @@ from picamera_server.views.utils.camera.test_camera import TestCamera
 from picamera_server.views.utils.camera.pi_camera import PiCamera, PI_CAMERA_IMPORTED
 
 # Define the Camera class based on the fact if picamera has been imported
-CAMERA = PiCamera if PI_CAMERA_IMPORTED else TestCamera
+CAMERA_CLASS = PiCamera if PI_CAMERA_IMPORTED else TestCamera
 
 CAMERA_CONTROLLER = None
 CAPTURE_CONTROLLER = None
@@ -17,7 +17,7 @@ def init_controllers():
     """
     global CAMERA_CONTROLLER, CAPTURE_CONTROLLER
     print('Starting camera and capture controller')
-    CAMERA_CONTROLLER = CAMERA()
+    CAMERA_CONTROLLER = CAMERA_CLASS()
     CAPTURE_CONTROLLER = CaptureController()
 
 
