@@ -152,7 +152,7 @@ python3 -m pipenv install --dev
 
 After installing all the requirements you can run the server with the following script
 
-`./scripts/run_server.sh`
+`./scripts/run_server_debug.sh`
 
 This script will run the server in development mode with the following commands
 
@@ -165,7 +165,7 @@ export SERVER_PORT=8080
 python3 -m pipenv run python main.py -debug
 ```
 
-The `run_server.sh` script will run the server in debug mode.
+The `run_server_debug.sh` script will run the server in debug mode.
 
 #### Development environment
 
@@ -205,6 +205,7 @@ The script will run the following commands:
 ```
 cd ./flask_server
 export APP_ENV=testing
+export FLASK_ENV=testing
 # This script must be runned after install_server_requirements.sh
 # Run tests and take coverage
 python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/

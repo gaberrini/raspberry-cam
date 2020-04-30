@@ -2,6 +2,7 @@
 # Move to the project folder
 cd ./flask_server
 export APP_ENV=testing
+export FLASK_ENV=testing
 # This script must be runned after install_server_requirements.sh
 # Run tests and take coverage
 python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/
