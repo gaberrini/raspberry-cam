@@ -188,7 +188,7 @@ python3 -m pipenv --rm
 
 ### 5) Run tests with coverage script
 
-The server have tests written with the framework [pytest] to get the coverage the framework [pytest-cov] is used.
+The server have tests written with the framework [unittest] to get the coverage the framework [coverage] is used.
 
 When running the tests the environment variable **APP_ENV** should be set to **`testing`**
 
@@ -208,8 +208,9 @@ export APP_ENV=testing
 export FLASK_ENV=testing
 # This script must be runned after install_server_requirements.sh
 # Run tests and take coverage
-python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/
+python3 -m pipenv run python -m coverage run -m unittest --verbose
 # Create HTML report of coverage
+python3 -m pipenv run coverage report
 python3 -m pipenv run coverage html
 ```
 
@@ -220,5 +221,5 @@ python3 -m pipenv run coverage html
 [Raspberry Pi Imager]: https://www.raspberrypi.org/downloads/
 [VNC Viewer instructions]: https://www.raspberrypi.org/documentation/remote-access/vnc/
 [pipenv]: https://pipenv-es.readthedocs.io/
-[pytest]: https://docs.pytest.org/en/latest/index.html
-[pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/
+[unittest]: https://docs.python.org/3/library/unittest.html
+[coverage]: https://coverage.readthedocs.io/en/coverage-5.1/
