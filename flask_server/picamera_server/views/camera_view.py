@@ -1,4 +1,3 @@
-from picamera_server.views.utils.camera.base_camera import Camera
 from picamera_server.views.utils.camera.camera_controllers import get_camera_controller, get_capture_controller
 from flask import Blueprint, abort, render_template, Response, request, url_for, redirect
 from jinja2 import TemplateNotFound
