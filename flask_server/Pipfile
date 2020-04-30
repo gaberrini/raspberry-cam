@@ -5,10 +5,12 @@ verify_ssl = true
 
 [dev-packages]
 pydevd = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"
-picamera = {version = "*", sys_platform = "== 'linux'"}
+picamera = {version = "*",sys_platform = "== 'linux'"}
 
 
 [requires]

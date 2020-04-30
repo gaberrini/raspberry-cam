@@ -15,13 +15,14 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
         * [pipenv environment manager](#pipenv-environment-manager)
 * [Running server](#running-server)
     * [Environment variables](#environment-variables)
-    * [Steps to run server](#steps-to-run-server)
-        * [System setup](#1-system-setup)
-        * [Python environment setup](#2-python-environment-setup)
-        * [Run server](#3-run-server)
+    * [Scripts to run the server](#scripts-to-run-the-server)
+        * [System setup script](#1-system-setup-script)
+        * [Python environment setup script](#2-python-environment-setup-script)
+        * [Run server script](#3-run-server-script)
             * [Development mode](#development-mode)
             * [Development environment](#development-environment)
-        * [Optional - cleanup virtualenv](#optional---cleanup-virtualenv)
+        * [Optional - cleanup virtualenv script](#4-optional---cleanup-virtualenv-script)
+        * [Run tests with coverage script](#5-run-tests-with-coverage-script)
 
 # Server features
 
@@ -98,7 +99,7 @@ In this section you can find the instructions to run the server and configure it
 * **SERVER_HOST** configure the host when running the server, default value is `0.0.0.0`
 * **SERVER_PORT** configure the port when running the server, default value is `8080`
 
-## Steps to run server
+## Scripts to run the server
 
 The code comes with scripts to run that will help to setup the system for the server and run it.
 
@@ -110,7 +111,7 @@ The code comes with scripts to run that will help to setup the system for the se
 
 `chmod +x ./scripts/*`
 
-### 1) System setup
+### 1) System setup script
 
 To setup the Raspbian OS to run the server you should update the OS packages and pip package manager.
 
@@ -129,7 +130,7 @@ python3 -m pip install -U pip
 python3 -m pip install pipenv
 ```
 
-### 2) Python environment setup
+### 2) Python environment setup script
 
 To setup the python environment to run the server you can run the following script
 
@@ -144,7 +145,7 @@ cd ./flask_server
 python3 -m pipenv install --dev
 ```
 
-### 3) Run server
+### 3) Run server script
 
 #### Development mode
 
@@ -169,7 +170,7 @@ The `run_server.sh` script will run the server in debug mode.
 
 If you run the server in a development environment like a Windows machine, there will be a **`TestCamera class`** defined to simulate a camera and be able to test the server and validate its features.
 
-### Optional - cleanup virtualenv
+### 4) Optional - cleanup virtualenv script
 
 If we want to cleanup the created virtualenv we can do it with the script
 
@@ -184,6 +185,28 @@ cd ./flask_server
 python3 -m pipenv --rm
 ```
 
+### 5) Run tests with coverage script
+
+The server have tests written with the framework [pytest] to get the coverage the framework [pytest-cov] is used.
+
+To run the tests and get a coverage report you can run the following script:
+
+`./scripts/run_tests_with_coverage.sh`
+
+The coverage report will be shown in the terminal after the tests run. Also a HTML report will be created, to see the report you should open the following created file:
+
+`./flask_server/htmlcov/index.html`
+
+The script will run the following commands:
+
+```
+cd ./flask_server
+# This script must be runned after install_server_requirements.sh
+# Run tests and take coverage
+python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/
+# Create HTML report of coverage
+python3 -m pipenv run coverage html
+```
 
 [Raspberry Pi 3 B+]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/
 [Camera module v2]: https://www.raspberrypi.org/products/camera-module-v2/
@@ -192,3 +215,5 @@ python3 -m pipenv --rm
 [Raspberry Pi Imager]: https://www.raspberrypi.org/downloads/
 [VNC Viewer instructions]: https://www.raspberrypi.org/documentation/remote-access/vnc/
 [pipenv]: https://pipenv-es.readthedocs.io/
+[pytest]: https://docs.pytest.org/en/latest/index.html
+[pytest-cov]: https://pytest-cov.readthedocs.io/en/latest/
