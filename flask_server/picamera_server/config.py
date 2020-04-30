@@ -1,8 +1,8 @@
 import os
 
 # Running settings, options ['development', 'testing']
-TESTING_ENV_TYPE = 'testing'
-ENV_TYPE = os.environ.get('ENV_TYPE', 'development')
+APP_ENV_TESTING = 'testing'
+APP_ENV = os.environ.get('APP_ENV', 'development')
 
 # Server settings
 SERVER_HOST = os.environ.get('SERVER_HOST', '0.0.0.0')

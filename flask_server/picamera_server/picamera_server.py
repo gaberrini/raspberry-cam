@@ -1,5 +1,5 @@
 import os
-from picamera_server.config import FLASK_INSTANCE_FOLDER, SECRET_KEY, ENV_TYPE, TESTING_ENV_TYPE
+from picamera_server.config import FLASK_INSTANCE_FOLDER, SECRET_KEY, APP_ENV, APP_ENV_TESTING
 from picamera_server.views.home import home
 from picamera_server.views.camera import camera
 from picamera_server.views.utils.camera.camera import init_controllers, set_camera_class
@@ -16,7 +16,7 @@ def create_app(test_config: dict = None) -> Flask:
     :return: Flask app
     """
     # Set TestCamera for the camera class when running with test environment
-    if ENV_TYPE == TESTING_ENV_TYPE:
+    if APP_ENV == APP_ENV_TESTING:
         set_camera_class(TestCamera)
 
     init_controllers()
