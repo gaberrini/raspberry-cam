@@ -3,8 +3,8 @@ import os
 
 # Env options ['development', 'testing', 'production']
 APP_ENV_TESTING = 'testing'
-ENV_DEVELOPMENT = 'development'
-APP_ENV = os.environ.get('APP_ENV', 'development')
+APP_ENV_DEVELOPMENT = 'development'
+APP_ENV = os.environ.get('APP_ENV', APP_ENV_DEVELOPMENT)
 
 # Server settings
 SERVER_HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
@@ -23,15 +23,15 @@ class Config(object):
     """Base config."""
     DEBUG = True
     TESTING = False
-    APP_ENV = ENV_DEVELOPMENT
-    ENV = ENV_DEVELOPMENT
+    APP_ENV = APP_ENV_DEVELOPMENT
+    ENV = APP_ENV_DEVELOPMENT
     SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(16))
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    APP_ENV = ENV_DEVELOPMENT
-    ENV = ENV_DEVELOPMENT
+    APP_ENV = APP_ENV_DEVELOPMENT
+    ENV = APP_ENV_DEVELOPMENT
 
 
 class TestingConfig(Config):
@@ -39,4 +39,5 @@ class TestingConfig(Config):
     TESTING = True
     ENV = APP_ENV_TESTING
     APP_ENV = APP_ENV_TESTING
+    WTF_CSRF_ENABLED = False
     SECRET_KEY = 'test'

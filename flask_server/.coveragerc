@@ -1,2 +1,5 @@
 [run]
-omit = picamera_server/tests/*
+omit =
+    picamera_server/tests/*
+    */.virtualenvs/*
+    */virtualenvs/*

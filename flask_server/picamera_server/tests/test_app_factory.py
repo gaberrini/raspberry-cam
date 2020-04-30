@@ -1,13 +1,33 @@
 """
 Test the Flask app factory
 """
+import unittest
+from picamera_server.config import APP_ENV_TESTING, APP_ENV_DEVELOPMENT
 from picamera_server.picamera_server import create_app
 
 
-def test_config_by_parameter():
-    """
-    Test if app apply the test config send by parameter
-    :return:
-    """
-    assert not create_app().testing
-    assert create_app({'TESTING': True}).testing
+class TestAppFactory(unittest.TestCase):
+
+    def test_config_files_by_app_env(self):
+        """
+        Test if app apply the config depending on the APP_ENV variable
+        :return:
+        """
+        # Apps creation
+        dev_app = create_app()
+        test_app = create_app(app_env=APP_ENV_TESTING)
+
+        # Validation
+        self.assertEqual(dev_app.env, APP_ENV_DEVELOPMENT)
+        self.assertEqual(test_app.env, APP_ENV_TESTING)
+
+    def test_config_by_parameters(self):
+        """
+        Test if app apply the test config send by parameter
+        :return:
+        """
+        # App creation
+        app = create_app(test_config={'TEST_VARIABLE': True})
+
+        # Validation
+        self.assertTrue(app.config['TEST_VARIABLE'])

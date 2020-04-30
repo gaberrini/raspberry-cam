@@ -5,6 +5,7 @@ export APP_ENV=testing
 export FLASK_ENV=testing
 # This script must be runned after install_server_requirements.sh
 # Run tests and take coverage
-python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/
+python3 -m pipenv run python -m coverage run -m unittest --verbose
 # Create HTML report of coverage
+python3 -m pipenv run coverage report
 python3 -m pipenv run coverage html

@@ -25,8 +25,13 @@ class TestCamera(Camera, metaclass=Singleton):
         test_images_paths = [os.path.join(STATIC_FILES_PATH, 'test_images', number + '.jpg') for number in ['1',
                                                                                                             '2',
                                                                                                             '3']]
+
+        self.frames = list()
         # Cache images to return
-        self.frames = [open(file, 'rb').read() for file in test_images_paths]
+        for file in test_images_paths:
+            with open(file, 'rb') as _file:
+                self.frames.append(_file.read())
+
         # To simulate hardware camera behaviour
         self.lock = threading.Lock()
 

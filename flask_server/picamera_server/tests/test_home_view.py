@@ -1,16 +1,17 @@
 """
 Test home view
 """
+from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.home import ENDPOINTS
-from flask.testing import FlaskClient
 
 
-def test_home(client: FlaskClient):
-    """
-    Test the UI Home view
-    :param client:
-    :return:
-    """
-    response = client.get(ENDPOINTS['UI_HOME'])
-    assert response.status_code == 200
-    assert 'Welcome to Raspberry Camera Controller' in str(response.data)
+class TestHomeView(BaseTestClass):
+
+    def test_home_get(self):
+        """
+        Test the UI Home view
+        :return:
+        """
+        response = self.client.get(ENDPOINTS['UI_HOME'])
+        self.assertEqual(200, response.status_code)
+        self.assertIn('Welcome to Raspberry Camera Controller', str(response.data))

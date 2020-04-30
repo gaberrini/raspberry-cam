@@ -15,6 +15,9 @@ class CaptureController(object, metaclass=Singleton):
     MAX_CAPTURE_INTERVAL: int = MAX_CAPTURE_INTERVAL
     MIN_CAPTURE_INTERVAL: int = MIN_CAPTURE_INTERVAL
 
+    def __init__(self):
+        print('Init capture controller')
+
     def _valid_capture_interval(self, capture_interval: Union[str, int]) -> bool:
         """
         Validate if a value is a valid capture interval
@@ -54,4 +57,3 @@ class CaptureController(object, metaclass=Singleton):
         return {'capture_interval': self.CAPTURE_INTERVAL,
                 'min_interval': self.MIN_CAPTURE_INTERVAL,
                 'max_interval': self.MAX_CAPTURE_INTERVAL}
-
