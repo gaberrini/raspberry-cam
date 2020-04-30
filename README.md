@@ -6,6 +6,7 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
 
 * [Server features](#server-features)
     * [Live stream](#live-stream)
+    * [Capturing mode](#capturing-mode)
 * [System setup](#system-setup)
     * [Operative system](#operative-system)
     * [Activate camera](#activate-camera)
@@ -26,11 +27,21 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
 
 # Server features
 
-Here we is a explanation of what you can do on this server
+The server is planned to have:
+
+* [Live stream](#live-stream)
+* [Capturing mode](#capturing-mode)
 
 ## Live stream
 
-In the endpoint `{SERVER_HOST}:{SERVER_PORT}/stream` there will be a live stream of the PiCamera
+In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/stream` there will be a live stream of the PiCamera
+
+## Capturing mode
+
+The capturing mode will store captures from the camera every X seconds while it's activated. The capture interval will be configurable.
+
+In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/capture` you will find the configuration and management section for the capturing mode
+
 
 # System setup
 
