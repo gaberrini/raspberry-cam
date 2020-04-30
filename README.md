@@ -192,6 +192,12 @@ The server have tests written with the framework [unittest] to get the coverage 
 
 When running the tests the environment variable **APP_ENV** should be set to **`testing`**
 
+The coverage module will have the following configuration file:
+
+`./flask_server/.coveragerc`
+
+In which we specify the paths to ignore in the coverage analysis.
+
 To run the tests and get a coverage report you can run the following script:
 
 `./scripts/run_tests_with_coverage.sh`
