@@ -98,6 +98,7 @@ In this section you can find the instructions to run the server and configure it
 * **FLASK_ENV** affect the running mode, if nothing is defined by default will be **production**, you can also define with the value of **development**.
 * **SERVER_HOST** configure the host when running the server, default value is `0.0.0.0`
 * **SERVER_PORT** configure the port when running the server, default value is `8080`
+* **ENV_TYPE** if running tests the value should be `testing`, and the camera class will be forced to be `TestCamera`
 
 ## Scripts to run the server
 
@@ -189,6 +190,8 @@ python3 -m pipenv --rm
 
 The server have tests written with the framework [pytest] to get the coverage the framework [pytest-cov] is used.
 
+When running the tests the environment variable **ENV_TYPE** should be set to **`testing`**
+
 To run the tests and get a coverage report you can run the following script:
 
 `./scripts/run_tests_with_coverage.sh`
@@ -201,6 +204,7 @@ The script will run the following commands:
 
 ```
 cd ./flask_server
+export ENV_TYPE=testing
 # This script must be runned after install_server_requirements.sh
 # Run tests and take coverage
 python3 -m pipenv run pytest --cov-config=.coveragerc --cov=picamera_server picamera_server/tests/

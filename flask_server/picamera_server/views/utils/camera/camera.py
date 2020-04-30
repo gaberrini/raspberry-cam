@@ -1,3 +1,4 @@
+from typing import Union
 from picamera_server.views.utils.camera.base_camera import Camera
 from picamera_server.views.utils.camera.capture_controller import CaptureController
 from picamera_server.views.utils.camera.test_camera import TestCamera
@@ -19,6 +20,15 @@ def init_controllers():
     print('Starting camera and capture controller')
     CAMERA_CONTROLLER = CAMERA_CLASS()
     CAPTURE_CONTROLLER = CaptureController()
+
+
+def set_camera_class(camera_class: Union[type(TestCamera), type(PiCamera)]) -> None:
+    """
+    Method used to set the global camera class, used in case of testing
+    :return:
+    """
+    global CAMERA_CLASS
+    CAMERA_CLASS = camera_class
 
 
 def get_camera_controller() -> Camera:

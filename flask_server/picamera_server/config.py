@@ -1,5 +1,9 @@
 import os
 
+# Running settings, options ['development', 'testing']
+TESTING_ENV_TYPE = 'testing'
+ENV_TYPE = os.environ.get('ENV_TYPE', 'development')
+
 # Server settings
 SERVER_HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
 SERVER_PORT = os.environ.get('SERVER_PORT', 8080)
