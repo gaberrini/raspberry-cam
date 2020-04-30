@@ -2,7 +2,7 @@
 Test home view
 """
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.home import ENDPOINTS
+from picamera_server.views.home_view import ENDPOINTS
 
 
 class TestHomeView(BaseTestClass):

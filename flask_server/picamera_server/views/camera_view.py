@@ -26,7 +26,7 @@ def stream():
     :return:
     """
     try:
-        return render_template('camera/stream.html', section='stream')
+        return render_template('camera/ui/stream.html', section='stream')
     except TemplateNotFound:
         abort(404)
 
@@ -60,7 +60,7 @@ def capture():
     try:
         capture_controller = get_capture_controller()
         data = capture_controller.get_interval_values()
-        return render_template('camera/capture.html', section='capture', data=data)
+        return render_template('camera/ui/capture.html', section='capture', data=data)
     except TemplateNotFound:
         abort(404)
 

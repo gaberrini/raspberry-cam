@@ -1,8 +1,8 @@
 import os
 from picamera_server.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
     DevelopmentConfig, TestingConfig
-from picamera_server.views.home import home
-from picamera_server.views.camera import camera
+from picamera_server.views.home_view import home
+from picamera_server.views.camera_view import camera
 from picamera_server.views.utils.camera.camera_controllers import init_controllers, set_camera_class
 from picamera_server.views.utils.camera.test_camera import TestCamera
 from flask import Flask
