@@ -106,10 +106,10 @@ In this section you can find the instructions to run the server and configure it
 
 ## Environment variables
 
-* **FLASK_ENV** affect the running mode, if nothing is defined by default will be **production**, you can also define with the value of **development**.
+* **FLASK_ENV** affect the running mode, if nothing is defined by default will be `production`, you can also define with the value of `development`.
 * **SERVER_HOST** configure the host when running the server, default value is `0.0.0.0`
 * **SERVER_PORT** configure the port when running the server, default value is `8080`
-* **APP_ENV** if running tests the value should be `testing`, and the camera class will be forced to be `TestCamera`
+* **APP_ENV** if running tests the value must be `testing`, and the camera class will be forced to be `TestCamera`. When development should be `development`
 
 ## Scripts to run the server
 
