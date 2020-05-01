@@ -12,6 +12,11 @@ ENDPOINTS = {
     'CONFIG_CAPTURE_MODE': '/camera/config/capture_interval'
 }
 
+TEMPLATES = {
+    'UI_CAMERA_STREAM': 'camera/ui/stream.html',
+    'UI_CONFIG_CAPTURE_MODE': 'camera/ui/capture.html'
+}
+
 
 @camera.route(ENDPOINTS['UI_CAMERA_STREAM'], methods=['GET'])
 def stream():
@@ -25,7 +30,7 @@ def stream():
     :return:
     """
     try:
-        return render_template('camera/ui/stream.html', section='stream')
+        return render_template(TEMPLATES['UI_CAMERA_STREAM'], section='stream')
     except TemplateNotFound:
         abort(404)
 
@@ -59,7 +64,7 @@ def capture():
     try:
         capture_controller = get_capture_controller()
         data = capture_controller.get_interval_values()
-        return render_template('camera/ui/capture.html', section='capture', data=data)
+        return render_template(TEMPLATES['UI_CONFIG_CAPTURE_MODE'], section='capture', data=data)
     except TemplateNotFound:
         abort(404)
 

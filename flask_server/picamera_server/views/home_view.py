@@ -8,6 +8,10 @@ ENDPOINTS = {
     'UI_HOME': '/',
 }
 
+TEMPLATES = {
+    'UI_HOME': 'home.html',
+}
+
 
 @home.route(ENDPOINTS['UI_HOME'])
 def home_page():
@@ -21,6 +25,6 @@ def home_page():
     :return:
     """
     try:
-        return render_template('home.html', section='home')
+        return render_template(TEMPLATES['UI_HOME'], section='home')
     except TemplateNotFound:
         abort(404)
