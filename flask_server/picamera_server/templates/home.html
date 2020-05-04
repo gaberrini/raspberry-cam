@@ -9,10 +9,10 @@
             <a href="https://www.raspberrypi.org/documentation/usage/camera/">instructions to enable it</a>.</p>
     </div>
     <div class="m-bot-25">
-        <p class="font-weight-bold">You can see the live image from <a href="{{ url_for('camera.stream') }}">here</a></p>
+        <p class="font-weight-bold">You can see the live image from <a href="{{ url_for('camera.ui_camera_stream') }}">here</a></p>
     </div>
     <div class="m-bot-25">
-        <p class="font-weight-bold">You can configure the capture mode from <a href="{{ url_for('camera.capture') }}">here</a></p>
+        <p class="font-weight-bold">You can configure the capture mode from <a href="{{ url_for('camera.ui_config_capture_mode') }}">here</a></p>
     </div>
 </div>
 {% endblock %}

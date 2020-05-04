@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark m-bot-25">
-    <a class="navbar-brand logo_h" href="{{ url_for('home.home_page') }}"><img src="/static/img/logo.png" alt=""></a>
+    <a class="navbar-brand logo_h" href="{{ url_for('home.ui_home') }}"><img src="/static/img/logo.png" alt=""></a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -7,13 +7,13 @@
 
     <div class="collapse navbar-collapse" id="navbarMenu">
         <ul class="navbar-nav mr-auto">
-            {% with item_title='Home', item_href=url_for('home.home_page') %}
+            {% with item_title='Home', item_href=url_for('home.ui_home') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
-            {% with item_title='Stream', item_href=url_for('camera.stream') %}
+            {% with item_title='Stream', item_href=url_for('camera.ui_camera_stream') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
-            {% with item_title='Capture', item_href=url_for('camera.capture') %}
+            {% with item_title='Capture', item_href=url_for('camera.ui_config_capture_mode') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
         </ul>

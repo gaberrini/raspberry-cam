@@ -5,21 +5,25 @@ from jinja2 import TemplateNotFound
 
 camera = Blueprint('camera', __name__, template_folder='templates')
 
+UI_CAMERA_STREAM = 'UI_CAMERA_STREAM'
+UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
+VIDEO_FRAME = 'VIDEO_FRAME'
+CONFIG_CAPTURE_MODE = 'CONFIG_CAPTURE_MODE'
 ENDPOINTS = {
-    'UI_CAMERA_STREAM': '/camera/ui/stream',
-    'UI_CONFIG_CAPTURE_MODE': '/camera/ui/capture',
-    'VIDEO_FRAME': '/camera/video_stream',
-    'CONFIG_CAPTURE_MODE': '/camera/config/capture_interval'
+    UI_CAMERA_STREAM: '/camera/ui/stream',
+    UI_CONFIG_CAPTURE_MODE: '/camera/ui/capture',
+    VIDEO_FRAME: '/camera/video_frame',
+    CONFIG_CAPTURE_MODE: '/camera/config/capture_interval'
 }
 
 TEMPLATES = {
-    'UI_CAMERA_STREAM': 'camera/ui/stream.html',
-    'UI_CONFIG_CAPTURE_MODE': 'camera/ui/capture.html'
+    UI_CAMERA_STREAM: 'camera/ui/stream.html',
+    UI_CONFIG_CAPTURE_MODE: 'camera/ui/capture.html'
 }
 
 
-@camera.route(ENDPOINTS['UI_CAMERA_STREAM'], methods=['GET'])
-def stream():
+@camera.route(ENDPOINTS[UI_CAMERA_STREAM], methods=['GET'])
+def ui_camera_stream():
     """
     GET
     responses:
@@ -30,13 +34,13 @@ def stream():
     :return:
     """
     try:
-        return render_template(TEMPLATES['UI_CAMERA_STREAM'], section='stream')
+        return render_template(TEMPLATES[UI_CAMERA_STREAM], section='stream')
     except TemplateNotFound:
         abort(404)
 
 
-@camera.route(ENDPOINTS['VIDEO_FRAME'], methods=['GET'])
-def video_stream():
+@camera.route(ENDPOINTS[VIDEO_FRAME], methods=['GET'])
+def video_frame():
     """
     Endpoint used to feed the video stream with multipart responses
 
@@ -50,8 +54,8 @@ def video_stream():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@camera.route(ENDPOINTS['UI_CONFIG_CAPTURE_MODE'], methods=['GET'])
-def capture():
+@camera.route(ENDPOINTS[UI_CONFIG_CAPTURE_MODE], methods=['GET'])
+def ui_config_capture_mode():
     """
     GET
     responses:
@@ -64,13 +68,13 @@ def capture():
     try:
         capture_controller = get_capture_controller()
         data = capture_controller.get_interval_values()
-        return render_template(TEMPLATES['UI_CONFIG_CAPTURE_MODE'], section='capture', data=data)
+        return render_template(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section='capture', data=data)
     except TemplateNotFound:
         abort(404)
 
 
-@camera.route(ENDPOINTS['CONFIG_CAPTURE_MODE'], methods=['POST'])
-def config_capture_interval():
+@camera.route(ENDPOINTS[CONFIG_CAPTURE_MODE], methods=['POST'])
+def config_capture_mode():
     """
     Configure the capture interval value in seconds
 
@@ -103,4 +107,4 @@ def config_capture_interval():
         print('Unexpected exception {}'.format(e))
         abort(500, 'Unexpected error')
 
-    return redirect(url_for('camera.capture'))
+    return redirect(url_for('camera.ui_config_capture_mode'))

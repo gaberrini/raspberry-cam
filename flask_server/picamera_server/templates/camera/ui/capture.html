@@ -13,7 +13,7 @@
         <br/>
         <strong>The configured capture interval is {{ data['capture_interval'] }} seconds.</strong>
         <br/>
-        <form class="form-inline" action="{{ url_for('camera.config_capture_interval') }}" method="post">
+        <form class="form-inline" action="{{ url_for('camera.config_capture_mode') }}" method="post">
             <div class="form-group mx-sm-3 mb-2">
                 <label>
                     <input type="number" class="form-control" name="capture_interval" placeholder="Interval"

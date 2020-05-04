@@ -4,17 +4,18 @@ from jinja2 import TemplateNotFound
 
 home = Blueprint('home', __name__, template_folder='templates')
 
+UI_HOME = 'UI_HOME'
 ENDPOINTS = {
-    'UI_HOME': '/',
+    UI_HOME: '/',
 }
 
 TEMPLATES = {
-    'UI_HOME': 'home.html',
+    UI_HOME: 'home.html',
 }
 
 
-@home.route(ENDPOINTS['UI_HOME'])
-def home_page():
+@home.route(ENDPOINTS[UI_HOME])
+def ui_home():
     """
     GET
     responses:
@@ -25,6 +26,6 @@ def home_page():
     :return:
     """
     try:
-        return render_template(TEMPLATES['UI_HOME'], section='home')
+        return render_template(TEMPLATES[UI_HOME], section='home')
     except TemplateNotFound:
         abort(404)

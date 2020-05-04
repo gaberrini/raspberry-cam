@@ -5,6 +5,7 @@
 import os
 import threading
 import time
+from typing import List
 from picamera_server.config import STATIC_FILES_PATH
 from picamera_server.views.helpers.singleton import Singleton
 from picamera_server.views.utils.camera.base_camera import Camera
@@ -27,13 +28,22 @@ class TestCamera(Camera, metaclass=Singleton):
                                                                                                             '3']]
 
         self.frames = list()
+        self._load_test_frames(test_images_paths)
+
+        # To simulate hardware camera behaviour
+        self.lock = threading.Lock()
+
+    def _load_test_frames(self, test_images_paths: List[str]) -> None:
+        """
+        Load the test frames from the files to the instance variable self.frames
+
+        :param test_images_paths: List of paths of images to load in self.frames
+        :return:
+        """
         # Cache images to return
         for file in test_images_paths:
             with open(file, 'rb') as _file:
                 self.frames.append(_file.read())
-
-        # To simulate hardware camera behaviour
-        self.lock = threading.Lock()
 
     def get_frame(self) -> bytes:
         """
