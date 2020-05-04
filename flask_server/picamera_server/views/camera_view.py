@@ -1,5 +1,5 @@
 from picamera_server.views.utils.camera.camera_controllers import get_camera_controller, get_capture_controller
-from flask import Blueprint, abort, render_template, Response, request, url_for, redirect
+from flask import Blueprint, abort, render_template, Response, request, url_for, redirect, stream_with_context
 from jinja2 import TemplateNotFound
 
 
@@ -20,6 +20,8 @@ TEMPLATES = {
     UI_CAMERA_STREAM: 'camera/ui/stream.html',
     UI_CONFIG_CAPTURE_MODE: 'camera/ui/capture.html'
 }
+
+MIME_TYPE_MULTIPART_FRAME = 'multipart/x-mixed-replace; boundary=frame'
 
 
 @camera.route(ENDPOINTS[UI_CAMERA_STREAM], methods=['GET'])
@@ -50,8 +52,8 @@ def video_frame():
             description: multipart/x-mixed-replace; boundary=frame
     :return:
     """
-    return Response(get_camera_controller().frames_generator(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(stream_with_context(get_camera_controller().frames_generator()),
+                    mimetype=MIME_TYPE_MULTIPART_FRAME)
 
 
 @camera.route(ENDPOINTS[UI_CONFIG_CAPTURE_MODE], methods=['GET'])
