@@ -21,8 +21,6 @@ class TestCamera(Camera, metaclass=Singleton):
         """
         Load the test images to be return when test frames are fetched
         """
-        print('Initializing test camera controller')
-
         test_images_paths = [os.path.join(STATIC_FILES_PATH, 'test_images', number + '.jpg') for number in ['1',
                                                                                                             '2',
                                                                                                             '3']]

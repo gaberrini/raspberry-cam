@@ -2,3 +2,4 @@
 /sources/
 .coverage
 */htmlcov/*
+*.log

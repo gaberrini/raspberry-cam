@@ -16,7 +16,6 @@ def init_controllers():
     :return:
     """
     global CAMERA_CONTROLLER, CAPTURE_CONTROLLER
-    print('Starting camera and capture controller')
     CAMERA_CONTROLLER = CAMERA_CLASS()
     CAPTURE_CONTROLLER = CaptureController()
 

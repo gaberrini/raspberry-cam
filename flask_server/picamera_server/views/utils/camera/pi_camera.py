@@ -22,7 +22,6 @@ class PiCamera(Camera, metaclass=Singleton):
     CAPTURE_FORMAT = 'jpeg'
 
     def __init__(self):
-        print('Initializing camera controller')
         self.camera = picamera.PiCamera()
         self.lock = threading.Lock()
 

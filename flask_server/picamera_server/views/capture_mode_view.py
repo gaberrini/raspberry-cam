@@ -1,5 +1,5 @@
 from picamera_server.views.utils.camera.camera_controllers import get_capture_controller
-from flask import Blueprint, abort, render_template, request, url_for, redirect
+from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
 from jinja2 import TemplateNotFound
 
 
@@ -64,14 +64,15 @@ def config_capture_mode():
     try:
         capture_controller.update_capture_interval(capture_interval)
     except ValueError:
-        abort(400, 'Form argument {} is required and must be an integer between {} and {}.'
-                   ' Value received: {}'
-              .format(FORM_CAPTURE_INTERVAL,
-                      capture_controller.MIN_CAPTURE_INTERVAL,
-                      capture_controller.MAX_CAPTURE_INTERVAL,
-                      capture_interval))
+        error_message = 'Form argument {} is required and must be an integer between {} and {}.' \
+                        ' Value received: {}'.format(FORM_CAPTURE_INTERVAL,
+                                                     capture_controller.MIN_CAPTURE_INTERVAL,
+                                                     capture_controller.MAX_CAPTURE_INTERVAL,
+                                                     capture_interval)
+        current_app.logger.exception(error_message)
+        abort(400, error_message)
     except Exception as e:
-        print('Unexpected exception {}'.format(e))
+        current_app.logger.exception('Unexpected exception {}'.format(e))
         abort(500, 'Unexpected error')
 
     return redirect(url_for('capture_mode.ui_config_capture_mode'))

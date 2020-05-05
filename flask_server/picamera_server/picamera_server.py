@@ -1,5 +1,6 @@
 import os
 from typing import Union
+from picamera_server.config.logging_config import set_up_logging
 from picamera_server.config.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
     DevelopmentConfig, TestingConfig
 from picamera_server.views.home_view import home
@@ -22,6 +23,7 @@ def create_app(app_env: str = APP_ENV_DEVELOPMENT, test_config: dict = None,
     :param camera_class: Camera class can be specified used for testing
     :return: Flask app
     """
+    set_up_logging(app_env)
     config_object_class = DevelopmentConfig
 
     # Set TestCamera for the camera class when running with test environment
