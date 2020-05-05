@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, abort
 from jinja2 import TemplateNotFound
-from picamera_server.models.capture import User
 
 
 home = Blueprint('home', __name__, template_folder='templates')

@@ -20,14 +20,3 @@ class TestAppFactory(unittest.TestCase):
         # Validation
         self.assertEqual(dev_app.env, APP_ENV_DEVELOPMENT)
         self.assertEqual(test_app.env, APP_ENV_TESTING)
-
-    def test_config_by_parameters(self):
-        """
-        Test if app apply the test config send by parameter
-        :return:
-        """
-        # App creation
-        app = create_app(test_config={'TEST_VARIABLE': True})
-
-        # Validation
-        self.assertTrue(app.config['TEST_VARIABLE'])

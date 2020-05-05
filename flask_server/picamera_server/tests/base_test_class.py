@@ -1,6 +1,5 @@
 import unittest
-from picamera_server.picamera_server import create_app
-from picamera_server.config.config import APP_ENV_TESTING
+from picamera_server import app
 
 
 class BaseTestClass(unittest.TestCase):
@@ -16,5 +15,5 @@ class BaseTestClass(unittest.TestCase):
         """
         Set up for tests
         """
-        self.app = create_app(app_env=APP_ENV_TESTING)
+        self.app = app
         self.client = self.app.test_client()
