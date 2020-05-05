@@ -5,6 +5,7 @@ from jinja2 import TemplateNotFound
 
 capture_mode = Blueprint('capture_mode', __name__, template_folder='templates')
 
+FORM_CAPTURE_INTERVAL = 'capture_interval'
 
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 CONFIG_CAPTURE_MODE = 'CONFIG_CAPTURE_MODE'
@@ -59,13 +60,15 @@ def config_capture_mode():
     :return:
     """
     capture_controller = get_capture_controller()
-    capture_interval = request.form.get('capture_interval', '')
+    capture_interval = request.form.get(FORM_CAPTURE_INTERVAL, '')
     try:
         capture_controller.update_capture_interval(capture_interval)
     except ValueError:
-        abort(400, 'Form argument capture_interval is required and must be an integer between {} and {}.'
+        abort(400, 'Form argument {} is required and must be an integer between {} and {}.'
                    ' Value received: {}'
-              .format(capture_controller.MIN_CAPTURE_INTERVAL, capture_controller.MAX_CAPTURE_INTERVAL,
+              .format(FORM_CAPTURE_INTERVAL,
+                      capture_controller.MIN_CAPTURE_INTERVAL,
+                      capture_controller.MAX_CAPTURE_INTERVAL,
                       capture_interval))
     except Exception as e:
         print('Unexpected exception {}'.format(e))
