@@ -11,10 +11,18 @@ class BaseTestClass(unittest.TestCase):
     They are going to be created at the setUp
     """
 
-    def setUp(self) -> None:
+    def setUpClass(cls) -> None:
         """
         Set up for tests
         """
-        self.app = app
-        self.db = db
-        self.client = self.app.test_client()
+        cls.app = app
+        cls.db = db
+        cls.client = cls.app.test_client()
+        cls.db.create_all()
+
+    def tearDownClass(cls) -> None:
+        """
+        Clean up database
+        :return:
+        """
+        cls.db.drop_all()

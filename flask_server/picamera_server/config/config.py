@@ -13,6 +13,7 @@ SERVER_PORT = os.environ.get('SERVER_PORT', 8080)
 FLASK_INSTANCE_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 STATIC_FILES_PATH = os.path.join(FLASK_INSTANCE_FOLDER, 'static')
 DEFAULT_SQL_LITE_DATABASE = 'sqlite:///{}'.format(os.path.join(FLASK_INSTANCE_FOLDER, 'sqlite.db'))
+TEST_SQL_LITE_DATABASE = 'sqlite:///{}'.format(os.path.join(FLASK_INSTANCE_FOLDER, 'test_sqlite.db'))
 
 # Camera settings
 DEFAULT_CAPTURE_INTERVAL = os.environ.get('DEFAULT_CAPTURE_INTERVAL', 60)
@@ -44,3 +45,4 @@ class TestingConfig(Config):
     APP_ENV = APP_ENV_TESTING
     WTF_CSRF_ENABLED = False
     SECRET_KEY = 'test'
+    SQLALCHEMY_DATABASE_URI = TEST_SQL_LITE_DATABASE

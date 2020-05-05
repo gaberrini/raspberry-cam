@@ -8,6 +8,7 @@ from importlib import reload
 from flask import Response
 
 import picamera_server.views.utils.camera.pi_camera as picamera
+from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.camera_view import ENDPOINTS, VIDEO_FRAME, MIME_TYPE_MULTIPART_FRAME, get_camera_controller
 from picamera_server.views.utils.camera.base_camera import Camera
@@ -28,6 +29,7 @@ class TestPiCamera(BaseTestClass):
         cls._clean_up_mock_picamera()
         set_camera_class(TestCamera)
         init_camera_controller()
+        super(TestPiCamera, cls).tearDownClass(cls)
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -42,6 +44,7 @@ class TestPiCamera(BaseTestClass):
         set_camera_class(PiCamera)
         init_camera_controller()
         cls.mock_picamera = sys.modules['picamera']
+        super(TestPiCamera, cls).setUpClass(cls)
 
     @classmethod
     def _mock_picamera(cls):
