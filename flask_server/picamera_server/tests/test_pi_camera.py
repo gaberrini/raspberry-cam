@@ -29,7 +29,7 @@ class TestPiCamera(BaseTestClass):
         cls._clean_up_mock_picamera()
         set_camera_class(TestCamera)
         init_camera_controller()
-        super(TestPiCamera, cls).tearDownClass(cls)
+        super(TestPiCamera, cls).tearDownClass()
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -44,7 +44,7 @@ class TestPiCamera(BaseTestClass):
         set_camera_class(PiCamera)
         init_camera_controller()
         cls.mock_picamera = sys.modules['picamera']
-        super(TestPiCamera, cls).setUpClass(cls)
+        super(TestPiCamera, cls).setUpClass()
 
     @classmethod
     def _mock_picamera(cls):

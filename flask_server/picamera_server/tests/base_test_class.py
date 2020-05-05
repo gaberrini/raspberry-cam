@@ -11,6 +11,7 @@ class BaseTestClass(unittest.TestCase):
     They are going to be created at the setUp
     """
 
+    @classmethod
     def setUpClass(cls) -> None:
         """
         Set up for tests
@@ -18,8 +19,10 @@ class BaseTestClass(unittest.TestCase):
         cls.app = app
         cls.db = db
         cls.client = cls.app.test_client()
+        cls.db.drop_all()
         cls.db.create_all()
 
+    @classmethod
     def tearDownClass(cls) -> None:
         """
         Clean up database

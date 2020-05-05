@@ -84,7 +84,8 @@ def config_capture_mode():
 @capture_mode.route(ENDPOINTS[SET_STATUS_CAPTURE_MODE], methods=['POST'])
 def set_status_capture_mode():
     """
-    Set the status of the capture mode
+    Set the status of the capture mode,
+    When the status goes from False to True it will start the capture thread
 
     parameters:
         -   name: status
@@ -102,6 +103,10 @@ def set_status_capture_mode():
     """
     capture_controller = get_capture_controller()
     status = request.form.get(FORM_STATUS, '')
+
+    if not status:
+        abort(400, 'Form argument {} is required must be "True" or "False"'.format(FORM_STATUS))
+
     try:
         capture_controller.update_capturing_status(status)
     except Exception as e:
