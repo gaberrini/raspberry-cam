@@ -12,7 +12,6 @@ import picamera_server.views.utils.camera.pi_camera as picamera
 from picamera_server.config.config import APP_ENV_TESTING
 from picamera_server.picamera_server import create_app
 from picamera_server.views.camera_view import ENDPOINTS, VIDEO_FRAME, MIME_TYPE_MULTIPART_FRAME, get_camera_controller
-from picamera_server.views.utils.camera.camera_controllers import set_camera_class, CAMERA_CLASS, init_controllers
 from picamera_server.views.utils.camera.base_camera import Camera
 from picamera_server.views.utils.camera.test_camera import TestCamera
 from picamera_server.views.utils.camera.pi_camera import PiCamera
