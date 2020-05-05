@@ -44,7 +44,7 @@ class PiCamera(Camera, metaclass=Singleton):
                 self.camera.__init__()
             except PiCameraMMALError as e:
                 print('Error enabling camera, looks like it was already enabled. \n {}'.format(e))
-                self.camera.close()
+                self._close_camera()
                 raise e
 
     def _close_camera(self) -> None:

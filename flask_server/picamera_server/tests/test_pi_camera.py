@@ -127,3 +127,14 @@ class TestPiCamera(unittest.TestCase):
             self.assertEqual(next(response_iterator), expected_multipart_frames[2])
             self.assertRaises(RuntimeError, response_iterator.__next__)
             self.assertRaises(StopIteration, response_iterator.__next__)
+
+    def test_camera_close(self):
+        """
+        Test the camera close method
+        :return:
+        """
+        # When
+        get_camera_controller()._close_camera()
+
+        # Validation
+        self.mock_picamera_class.close.assert_called_once()
