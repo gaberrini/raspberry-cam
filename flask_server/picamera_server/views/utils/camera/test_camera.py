@@ -45,18 +45,13 @@ class TestCamera(Camera, metaclass=Singleton):
             with open(file, 'rb') as _file:
                 self.frames.append(_file.read())
 
-    def get_frame(self, frame_number: Optional[int] = None, simulate_delay: Optional[bool] = True) -> bytes:
+    def get_frame(self) -> bytes:
         """
         Return a random test_image
-        :param frame_number: optional select specific test frame number
-        :param simulate_delay: simulate a delay of 1 second to return the frame
+
         :return: random test_image
         """
-        if simulate_delay:
-            time.sleep(1)
-
         self.lock.acquire()
-        frame_number = frame_number if frame_number else int(time.time()) % 3
-        _frame = self.frames[frame_number]
+        _frame = self.frames[int(time.time()) % 3]
         self.lock.release()
         return _frame

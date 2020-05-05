@@ -125,6 +125,7 @@ class TestPiCamera(unittest.TestCase):
                                      Camera._get_multipart_frame(test_frames[1]),
                                      Camera._get_multipart_frame(test_frames[2])]
 
+        # Get frame of TestCamera is used in the _mock_camera_capture method
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
             response = self.client.get(ENDPOINTS[VIDEO_FRAME])
