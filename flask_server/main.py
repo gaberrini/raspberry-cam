@@ -1,6 +1,6 @@
 import sys
 from picamera_server.picamera_server import create_app
-from picamera_server.config import SERVER_HOST, SERVER_PORT, APP_ENV
+from picamera_server.config.config import SERVER_HOST, SERVER_PORT, APP_ENV
 
 
 def main():

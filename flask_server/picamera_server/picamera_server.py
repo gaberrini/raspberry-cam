@@ -1,6 +1,6 @@
 import os
 from typing import Union
-from picamera_server.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
+from picamera_server.config.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
     DevelopmentConfig, TestingConfig
 from picamera_server.views.home_view import home
 from picamera_server.views.camera_view import camera

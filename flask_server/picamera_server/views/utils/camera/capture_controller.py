@@ -1,5 +1,5 @@
 from typing import Union
-from picamera_server.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
+from picamera_server.config.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
     MAX_CAPTURE_INTERVAL
 from picamera_server.views.helpers.singleton import Singleton
 

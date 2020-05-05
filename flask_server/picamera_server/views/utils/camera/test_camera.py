@@ -5,8 +5,8 @@
 import os
 import threading
 import time
-from typing import List, Optional
-from picamera_server.config import STATIC_FILES_PATH
+from typing import List
+from picamera_server.config.config import STATIC_FILES_PATH
 from picamera_server.views.helpers.singleton import Singleton
 from picamera_server.views.utils.camera.base_camera import Camera
 

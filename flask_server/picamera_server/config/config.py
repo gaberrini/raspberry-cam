@@ -10,7 +10,7 @@ APP_ENV = os.environ.get('APP_ENV', APP_ENV_DEVELOPMENT)
 SERVER_HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
 SERVER_PORT = os.environ.get('SERVER_PORT', 8080)
 
-FLASK_INSTANCE_FOLDER = os.path.dirname(__file__)
+FLASK_INSTANCE_FOLDER = os.path.join(os.path.dirname(__file__), '..')
 STATIC_FILES_PATH = os.path.join(FLASK_INSTANCE_FOLDER, 'static')
 
 # Camera settings

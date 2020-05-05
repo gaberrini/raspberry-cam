@@ -1,6 +1,6 @@
 import unittest
 from picamera_server.picamera_server import create_app
-from picamera_server.config import APP_ENV_TESTING
+from picamera_server.config.config import APP_ENV_TESTING
 
 
 class BaseTestClass(unittest.TestCase):
