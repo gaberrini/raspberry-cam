@@ -1,8 +1,7 @@
 import time
 from threading import Thread
 from typing import Union, Optional
-from flask import current_app
-from picamera_server import db
+from picamera_server import db, app
 from picamera_server.config.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
     MAX_CAPTURE_INTERVAL
 from picamera_server.models.captured_image import CapturedImage
@@ -100,7 +99,7 @@ class CaptureController(object, metaclass=Singleton):
                 db.session.commit()
                 time.sleep(self.CAPTURE_INTERVAL)
         except Exception as e:
-            current_app.logger.exception('Exception in capture thread {}'.format(e))
+            app.logger.exception('Exception in capture thread {}'.format(e))
         finally:
             self.CAPTURING_THREAD = None
 
