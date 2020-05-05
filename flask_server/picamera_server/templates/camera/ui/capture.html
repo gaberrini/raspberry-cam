@@ -9,16 +9,8 @@
         <br/>
         <strong>The configured capture interval is {{ data['capture_interval'] }} seconds.</strong>
         <br/>
-        <form class="form-inline" action="{{ url_for('capture_mode.set_capt_interval_value') }}" method="post">
-            <div class="form-group mx-sm-3 mb-2">
-                <label>
-                    <input type="number" class="form-control" name="capture_interval" placeholder="Interval"
-                           min="{{ data['min_interval'] }}" max="{{ data['max_interval'] }}"
-                           value="{{ data['capture_interval'] }}">
-                </label>
-            </div>
-            <button type="submit" class="btn btn-primary mb-2">Update interval</button>
-        </form>
+
+        {% include 'camera/ui/capture/form_set_capt_interval_value.html' %}
     <p/>
 </div>
 {% endblock %}
