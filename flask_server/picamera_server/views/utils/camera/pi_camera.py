@@ -7,7 +7,7 @@ from picamera_server.views.utils.camera.base_camera import Camera
 PI_CAMERA_IMPORTED = False
 try:
     import picamera
-    import picamera.exc.PiCameraMMALError as PiCameraMMALError
+    import picamera.exc as picamera_exc
     PI_CAMERA_IMPORTED = True
 except ImportError:
     print('Error importing picamera')
@@ -42,7 +42,7 @@ class PiCamera(Camera, metaclass=Singleton):
         if not self._is_camera_enabled():
             try:
                 self.camera.__init__()
-            except PiCameraMMALError as e:
+            except picamera_exc.PiCameraMMALError as e:
                 print('Error enabling camera, looks like it was already enabled. \n {}'.format(e))
                 self._close_camera()
                 raise e

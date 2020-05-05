@@ -50,11 +50,11 @@ class TestPiCamera(unittest.TestCase):
         self.mock_picamera_class = MagicMock()
         self.mock_picamera_class.capture = MagicMock()
         self.mock_picamera_class.capture.side_effect = TestPiCamera._mock_camera_capture
-        self.mock_pi_camera_mmal_error = MagicMock()
+        self.mock_pi_camera_exc = MagicMock()
         self.mock_picamera_module.PiCamera = MagicMock()
         self.mock_picamera_module.PiCamera.return_value = self.mock_picamera_class
         sys.modules['picamera'] = self.mock_picamera_module
-        sys.modules['picamera.exc.PiCameraMMALError'] = self.mock_pi_camera_mmal_error
+        sys.modules['picamera.exc'] = self.mock_pi_camera_exc
 
     @staticmethod
     def _clean_up_mock_picamera():
