@@ -4,16 +4,12 @@
     <p class="font-weight-normal">
         Capture images from the camera and store them, with an interval defined in seconds.
         <br/>
-        The interval will be able to configure between {{ data['min_interval'] }} seconds and {{ data['max_interval'] }} seconds.
-        <br/>
-        You will be able to see the images split by day and being able to download all the images of a day together.
-        <br/>
-        The view of the captures is going to be paginated
+        The interval range is between {{ data['min_interval'] }} seconds and {{ data['max_interval'] }} seconds.
         <br/>
         <br/>
         <strong>The configured capture interval is {{ data['capture_interval'] }} seconds.</strong>
         <br/>
-        <form class="form-inline" action="{{ url_for('capture_mode.config_capture_mode') }}" method="post">
+        <form class="form-inline" action="{{ url_for('capture_mode.set_capt_interval_value') }}" method="post">
             <div class="form-group mx-sm-3 mb-2">
                 <label>
                     <input type="number" class="form-control" name="capture_interval" placeholder="Interval"
@@ -23,12 +19,6 @@
             </div>
             <button type="submit" class="btn btn-primary mb-2">Update interval</button>
         </form>
-        <br/>
-        See images
-        <br/>
-        <br/>
-        Download images
-        <br/>
     <p/>
 </div>
 {% endblock %}

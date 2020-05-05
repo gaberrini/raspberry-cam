@@ -10,10 +10,10 @@ FORM_STATUS = 'status'
 
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
-CONFIG_CAPTURE_MODE = 'CONFIG_CAPTURE_MODE'
+SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/capture',
-    CONFIG_CAPTURE_MODE: '/camera/config/capture_interval',
+    SET_CAPT_INTERVAL_VALUE: '/camera/config/capture_interval',
     SET_STATUS_CAPTURE_MODE: '/camera/config/set_capture_mode'
 }
 
@@ -41,8 +41,8 @@ def ui_config_capture_mode():
         abort(404)
 
 
-@capture_mode.route(ENDPOINTS[CONFIG_CAPTURE_MODE], methods=['POST'])
-def config_capture_mode():
+@capture_mode.route(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], methods=['POST'])
+def set_capt_interval_value():
     """
     Configure the capture interval value in seconds
 

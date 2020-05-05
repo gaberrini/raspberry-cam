@@ -8,7 +8,7 @@ from jinja2 import TemplateNotFound
 from flask import render_template, abort, redirect
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE, CONFIG_CAPTURE_MODE, \
+from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE, SET_CAPT_INTERVAL_VALUE, \
     FORM_CAPTURE_INTERVAL, FORM_STATUS, SET_STATUS_CAPTURE_MODE
 from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
@@ -30,7 +30,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_render_template.side_effect = render_template
         expected_data = capture_controller.get_interval_values()
         expected_section = 'capture'
-        expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[CONFIG_CAPTURE_MODE])
+        expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
         expected_input_xpath = '//input[@min={} and @max={} and' \
                                ' @value={}]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
                                                     capture_controller.MAX_CAPTURE_INTERVAL,
@@ -84,7 +84,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_abort.side_effect = abort
 
         # When
-        response = self.client.post(ENDPOINTS[CONFIG_CAPTURE_MODE])
+        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -105,7 +105,7 @@ class TestCaptureModeView(BaseTestClass):
         data = {FORM_CAPTURE_INTERVAL: get_capture_controller().MIN_CAPTURE_INTERVAL - 1}
 
         # When
-        response = self.client.post(ENDPOINTS[CONFIG_CAPTURE_MODE], data=data)
+        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -126,7 +126,7 @@ class TestCaptureModeView(BaseTestClass):
         data = {FORM_CAPTURE_INTERVAL: get_capture_controller().MAX_CAPTURE_INTERVAL + 1}
 
         # When
-        response = self.client.post(ENDPOINTS[CONFIG_CAPTURE_MODE], data=data)
+        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -151,7 +151,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_get_capture_controller.return_value = mock_capture_controller
 
         # When
-        response = self.client.post(ENDPOINTS[CONFIG_CAPTURE_MODE])
+        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
 
         # Validation
         self.assertEqual(500, response.status_code)
@@ -173,7 +173,7 @@ class TestCaptureModeView(BaseTestClass):
         expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
 
         # When
-        response = self.client.post(ENDPOINTS[CONFIG_CAPTURE_MODE], data=data)
+        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
 
         # Validation
         html_tree = html.fromstring(str(response.data))
