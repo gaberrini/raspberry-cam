@@ -164,7 +164,7 @@ The command lines to do this are:
 # Move to the project folder
 cd ./flask_server
 # Install pipenv packages
-python3 -m pipenv install --dev
+python3 -m pipenv --site-packages --python=python3 install --dev
 ```
 
 ### 3) Run server script
