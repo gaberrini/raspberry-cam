@@ -4,6 +4,7 @@ from picamera_server.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_E
     DevelopmentConfig, TestingConfig
 from picamera_server.views.home_view import home
 from picamera_server.views.camera_view import camera
+from picamera_server.views.capture_mode_view import capture_mode
 from picamera_server.views.utils.camera.camera_controllers import init_controllers, set_camera_class
 from picamera_server.views.utils.camera.test_camera import TestCamera
 from picamera_server.views.utils.camera.pi_camera import PiCamera
@@ -44,5 +45,6 @@ def create_app(app_env: str = APP_ENV_DEVELOPMENT, test_config: dict = None,
     # Register Blueprints
     app.register_blueprint(home)
     app.register_blueprint(camera)
+    app.register_blueprint(capture_mode)
 
     return app

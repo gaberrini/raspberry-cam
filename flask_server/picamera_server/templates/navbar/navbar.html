@@ -13,7 +13,7 @@
             {% with item_title='Stream', item_href=url_for('camera.ui_camera_stream') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
-            {% with item_title='Capture', item_href=url_for('camera.ui_config_capture_mode') %}
+            {% with item_title='Capture', item_href=url_for('capture_mode.ui_config_capture_mode') %}
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
         </ul>
