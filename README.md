@@ -111,6 +111,14 @@ In this section you can find the instructions to run the server and configure it
 * **SERVER_PORT** configure the port when running the server, default value is `8080`
 * **APP_ENV** if running tests the value must be `testing`, and the camera class will be forced to be `TestCamera`. When development should be `development`
 
+## Server logging
+
+When creating the Flask app in `./flask_server/picamera_server/picamera_server.py` in the `create_app` function the logging is configured using `logging.conf.dictConfig`.
+
+The configuration will include logging to a file and will place the log files in the folder `./flask_server/picamera_server/logs`.
+
+When running test environment the log to a file will be disabled.
+
 ## Scripts to run the server
 
 The code comes with scripts to run that will help to setup the system for the server and run it.
