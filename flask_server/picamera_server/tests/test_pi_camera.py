@@ -24,52 +24,37 @@ class TestPiCamera(unittest.TestCase):
         """
         Set up for tests
         """
+        # Set modules patch and reload module
+        self._mock_picamera()
+        reload(picamera)
+
         self.app = create_app(app_env=APP_ENV_TESTING, camera_class=PiCamera)
         self.client = self.app.test_client()
 
         self.mock_picamera = sys.modules['picamera']
 
     @classmethod
-    def setUpClass(cls) -> None:
-        """
-        Set up the pi camera controller with the mocks
-        :return:
-        """
-        # Set modules patch and reload module
-        cls._mock_picamera()
-        reload(picamera)
-
-        # Set picamera as camera class to reset the controller
-        cls.back_up_camera_class = CAMERA_CLASS
-        set_camera_class(PiCamera)
-        # Controllers are init when app is created in setUp
-
-    @classmethod
     def tearDownClass(cls) -> None:
         """
-        Return the controllers back as before the TestClass and close the mocks
+        Return the clean up the mocks
         :return:
         """
-        # Set camera controllers back to normal
-        set_camera_class(cls.back_up_camera_class)
         cls._clean_up_mock_picamera()
-        init_controllers()
 
-    @staticmethod
-    def _mock_picamera():
+    def _mock_picamera(self):
         """
         Mock picamera module and set them up to sys modules
         :return:
         """
-        mock_picamera_module = MagicMock()
-        mock_picamera_class = MagicMock()
-        mock_picamera_class.capture = MagicMock()
-        mock_picamera_class.capture.side_effect = TestPiCamera._mock_camera_capture
-        mock_pi_camera_mmal_error = MagicMock()
-        mock_picamera_module.PiCamera = MagicMock()
-        mock_picamera_module.PiCamera.return_value = mock_picamera_class
-        sys.modules['picamera'] = mock_picamera_module
-        sys.modules['picamera.exc.PiCameraMMALError'] = mock_pi_camera_mmal_error
+        self.mock_picamera_module = MagicMock()
+        self.mock_picamera_class = MagicMock()
+        self.mock_picamera_class.capture = MagicMock()
+        self.mock_picamera_class.capture.side_effect = TestPiCamera._mock_camera_capture
+        self.mock_pi_camera_mmal_error = MagicMock()
+        self.mock_picamera_module.PiCamera = MagicMock()
+        self.mock_picamera_module.PiCamera.return_value = self.mock_picamera_class
+        sys.modules['picamera'] = self.mock_picamera_module
+        sys.modules['picamera.exc.PiCameraMMALError'] = self.mock_pi_camera_mmal_error
 
     @staticmethod
     def _clean_up_mock_picamera():
