@@ -7,7 +7,7 @@ from picamera_server.views.utils.camera.base_camera import Camera
 PI_CAMERA_IMPORTED = False
 try:
     import picamera
-    from picamera.exc import PiCameraMMALError
+    import picamera.exc.PiCameraMMALError as PiCameraMMALError
     PI_CAMERA_IMPORTED = True
 except ImportError:
     print('Error importing picamera')
