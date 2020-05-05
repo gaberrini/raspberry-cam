@@ -1,6 +1,7 @@
 """
 Test camera view
 """
+from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
 from flask import render_template, abort, Response
@@ -23,14 +24,16 @@ class TestCameraView(BaseTestClass):
         """
         # Mock and data
         mock_render_template.side_effect = render_template
-        expected_element = '<img src="{}"'.format(ENDPOINTS[VIDEO_FRAME])
+        img_source_element_xpath = '//img[@src="{}"]'.format(ENDPOINTS[VIDEO_FRAME])
 
         # When
         response = self.client.get(ENDPOINTS[UI_CAMERA_STREAM])
 
         # Validation
+        html_tree = html.fromstring(str(response.data))
+
         self.assertEqual(200, response.status_code)
-        self.assertIn(expected_element, str(response.data))
+        self.assertTrue(html_tree.xpath(img_source_element_xpath), 'Img element to stream not found')
         mock_render_template.assert_called_once_with(TEMPLATES[UI_CAMERA_STREAM], section='stream')
 
     @patch('picamera_server.views.camera_view.abort')

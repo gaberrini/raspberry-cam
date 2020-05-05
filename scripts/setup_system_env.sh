@@ -5,3 +5,5 @@ sudo apt-get update
 python3 -m pip install -U pip
 # Install pipenv
 python3 -m pip install pipenv
+# Install lxml for testing
+sudo apt-get install python3-lxml

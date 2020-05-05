@@ -140,6 +140,8 @@ sudo apt-get update
 python3 -m pip install -U pip
 # Install pipenv
 python3 -m pip install pipenv
+# Install lxml for testing
+sudo apt-get install python3-lxml
 ```
 
 ### 2) Python environment setup script
@@ -201,6 +203,8 @@ python3 -m pipenv --rm
 
 The server have tests written with the framework [unittest] to get the coverage the framework [coverage] is used.
 
+The tests will use the module [lxml] to validate the rendered HTML elements, the package is installed in the system interpreter using the script `./scripts/setup_system_env.sh`, and then included in the virtual env thanks to the `--site-packages` flag.
+
 When running the tests the environment variable **APP_ENV** should be set to **`testing`**
 
 The coverage module will have the following configuration file:
@@ -240,3 +244,4 @@ python3 -m pipenv run coverage html
 [pipenv]: https://pipenv-es.readthedocs.io/
 [unittest]: https://docs.python.org/3/library/unittest.html
 [coverage]: https://coverage.readthedocs.io/en/coverage-5.1/
+[lxml]: https://lxml.de/index.html

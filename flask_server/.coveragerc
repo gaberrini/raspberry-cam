@@ -3,3 +3,4 @@ omit =
     picamera_server/tests/*
     */.virtualenvs/*
     */virtualenvs/*
+    */python3/*

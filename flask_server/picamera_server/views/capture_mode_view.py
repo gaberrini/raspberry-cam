@@ -5,6 +5,7 @@ from jinja2 import TemplateNotFound
 
 capture_mode = Blueprint('capture_mode', __name__, template_folder='templates')
 
+
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 CONFIG_CAPTURE_MODE = 'CONFIG_CAPTURE_MODE'
 ENDPOINTS = {
@@ -62,7 +63,7 @@ def config_capture_mode():
     try:
         capture_controller.update_capture_interval(capture_interval)
     except ValueError:
-        abort(400, 'Query argument capture_interval is required and must be an integer between {} and {}.'
+        abort(400, 'Form argument capture_interval is required and must be an integer between {} and {}.'
                    ' Value received: {}'
               .format(capture_controller.MIN_CAPTURE_INTERVAL, capture_controller.MAX_CAPTURE_INTERVAL,
                       capture_interval))
