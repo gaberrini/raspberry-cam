@@ -10,8 +10,9 @@ APP_ENV = os.environ.get('APP_ENV', APP_ENV_DEVELOPMENT)
 SERVER_HOST = os.environ.get('SERVER_HOST', '0.0.0.0')
 SERVER_PORT = os.environ.get('SERVER_PORT', 8080)
 
-FLASK_INSTANCE_FOLDER = os.path.join(os.path.dirname(__file__), '..')
+FLASK_INSTANCE_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 STATIC_FILES_PATH = os.path.join(FLASK_INSTANCE_FOLDER, 'static')
+DEFAULT_SQL_LITE_DATABASE = 'sqlite:///{}'.format(os.path.join(FLASK_INSTANCE_FOLDER, 'sqlite.db'))
 
 # Camera settings
 DEFAULT_CAPTURE_INTERVAL = os.environ.get('DEFAULT_CAPTURE_INTERVAL', 60)
@@ -26,6 +27,8 @@ class Config(object):
     APP_ENV = APP_ENV_DEVELOPMENT
     ENV = APP_ENV_DEVELOPMENT
     SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(16))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', DEFAULT_SQL_LITE_DATABASE)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):

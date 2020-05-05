@@ -1,6 +1,7 @@
 import os
 from typing import Union
 from picamera_server.config.logging_config import set_up_logging
+from picamera_server.config.database import config_database, get_db_instance
 from picamera_server.config.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
     DevelopmentConfig, TestingConfig
 from picamera_server.views.home_view import home
@@ -48,5 +49,12 @@ def create_app(app_env: str = APP_ENV_DEVELOPMENT, test_config: dict = None,
     app.register_blueprint(home)
     app.register_blueprint(camera)
     app.register_blueprint(capture_mode)
+
+    config_database(app)
+    from picamera_server.models.capture import User
+    get_db_instance().create_all()
+
+    users  = User.query.all()
+    print(users)
 
     return app
