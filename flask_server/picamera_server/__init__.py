@@ -7,4 +7,6 @@ db = config_database(app)
 
 import picamera_server.models
 
+db.create_all()
+
 register_blueprints(app)
