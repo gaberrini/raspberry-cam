@@ -1,13 +1,11 @@
 import os
 from picamera_server.config.logging_config import set_up_logging
 from picamera_server.config.config import FLASK_INSTANCE_FOLDER, APP_ENV_TESTING, APP_ENV_DEVELOPMENT,\
-    DevelopmentConfig, TestingConfig
-from picamera_server.views.utils.camera.camera_controllers import init_controllers, set_camera_class
-from picamera_server.views.utils.camera.test_camera import TestCamera
+    DevelopmentConfig, TestingConfig, APP_ENV
 from flask import Flask
 
 
-def register_blueprints(app: Flask):
+def register_blueprints(app: Flask) -> None:
     """
     Register the blueprints to the app
     We make the imports of the blueprints here to avoid pre load of the views when the app and database
@@ -26,6 +24,24 @@ def register_blueprints(app: Flask):
     app.register_blueprint(capture_mode)
 
 
+def init_camera_controllers() -> None:
+    """
+    Init the camera and camera capture controllers
+
+    :return:
+    """
+    from picamera_server.views.utils.camera.camera_controllers import init_camera_controller, set_camera_class
+    from picamera_server.views.utils.camera.capture_controller import init_capture_controller
+    from picamera_server.views.utils.camera.test_camera import TestCamera
+
+    # Set TestCamera for the camera class when running with test environment
+    if APP_ENV == APP_ENV_TESTING:
+        set_camera_class(TestCamera)
+
+    init_camera_controller()
+    init_capture_controller()
+
+
 def create_app(app_env: str = APP_ENV_DEVELOPMENT) -> Flask:
     """
     Initialize the camera controller and
@@ -39,10 +55,7 @@ def create_app(app_env: str = APP_ENV_DEVELOPMENT) -> Flask:
 
     # Set TestCamera for the camera class when running with test environment
     if app_env == APP_ENV_TESTING:
-        set_camera_class(TestCamera)
         config_object_class = TestingConfig
-
-    init_controllers()
 
     # Create and configure the app
     app = Flask(__name__, instance_path=FLASK_INSTANCE_FOLDER)

@@ -1,5 +1,4 @@
 from typing import Union
-from picamera_server.views.utils.camera.capture_controller import CaptureController
 from picamera_server.views.utils.camera.test_camera import TestCamera
 from picamera_server.views.utils.camera.pi_camera import PiCamera, PI_CAMERA_IMPORTED
 
@@ -7,17 +6,15 @@ from picamera_server.views.utils.camera.pi_camera import PiCamera, PI_CAMERA_IMP
 CAMERA_CLASS = PiCamera if PI_CAMERA_IMPORTED else TestCamera
 
 CAMERA_CONTROLLER = None
-CAPTURE_CONTROLLER = None
 
 
-def init_controllers():
+def init_camera_controller():
     """
-    Init the camera and capture controller. Should be run only once
+    Init the camera controller. Should be run only once
     :return:
     """
-    global CAMERA_CONTROLLER, CAPTURE_CONTROLLER
+    global CAMERA_CONTROLLER
     CAMERA_CONTROLLER = CAMERA_CLASS()
-    CAPTURE_CONTROLLER = CaptureController()
 
 
 def set_camera_class(camera_class: Union[type(TestCamera), type(PiCamera)]) -> None:
@@ -35,11 +32,3 @@ def get_camera_controller() -> Union[PiCamera, TestCamera]:
     :return:
     """
     return CAMERA_CONTROLLER
-
-
-def get_capture_controller() -> CaptureController:
-    """
-    Return the capture controller.
-    :return:
-    """
-    return CAPTURE_CONTROLLER

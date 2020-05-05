@@ -12,7 +12,7 @@ from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.camera_view import ENDPOINTS, VIDEO_FRAME, MIME_TYPE_MULTIPART_FRAME, get_camera_controller
 from picamera_server.views.utils.camera.base_camera import Camera
 from picamera_server.views.utils.camera.test_camera import TestCamera
-from picamera_server.views.utils.camera.camera_controllers import set_camera_class, init_controllers
+from picamera_server.views.utils.camera.camera_controllers import set_camera_class, init_camera_controller
 from picamera_server.views.utils.camera.pi_camera import PiCamera
 
 
@@ -27,7 +27,7 @@ class TestPiCamera(BaseTestClass):
         """
         cls._clean_up_mock_picamera()
         set_camera_class(TestCamera)
-        init_controllers()
+        init_camera_controller()
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -40,7 +40,7 @@ class TestPiCamera(BaseTestClass):
         cls._mock_picamera()
         reload(picamera)
         set_camera_class(PiCamera)
-        init_controllers()
+        init_camera_controller()
         cls.mock_picamera = sys.modules['picamera']
 
     @classmethod

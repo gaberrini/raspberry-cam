@@ -1,5 +1,5 @@
 import unittest
-from picamera_server import app
+from picamera_server import app, db
 
 
 class BaseTestClass(unittest.TestCase):
@@ -16,4 +16,5 @@ class BaseTestClass(unittest.TestCase):
         Set up for tests
         """
         self.app = app
+        self.db = db
         self.client = self.app.test_client()

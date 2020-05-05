@@ -1,4 +1,4 @@
-from picamera_server.views.utils.camera.camera_controllers import get_capture_controller
+from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
 from jinja2 import TemplateNotFound
 
@@ -6,12 +6,15 @@ from jinja2 import TemplateNotFound
 capture_mode = Blueprint('capture_mode', __name__, template_folder='templates')
 
 FORM_CAPTURE_INTERVAL = 'capture_interval'
+FORM_STATUS = 'status'
 
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
+SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 CONFIG_CAPTURE_MODE = 'CONFIG_CAPTURE_MODE'
 ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/capture',
-    CONFIG_CAPTURE_MODE: '/camera/config/capture_interval'
+    CONFIG_CAPTURE_MODE: '/camera/config/capture_interval',
+    SET_STATUS_CAPTURE_MODE: '/camera/config/set_capture_mode'
 }
 
 TEMPLATES = {
@@ -46,7 +49,7 @@ def config_capture_mode():
     parameters:
         -   name: value
             type: int
-            in: query
+            in: form
             required: true
             description: Value to set the capture interval
     responses:
@@ -71,6 +74,36 @@ def config_capture_mode():
                                                      capture_interval)
         current_app.logger.exception(error_message)
         abort(400, error_message)
+    except Exception as e:
+        current_app.logger.exception('Unexpected exception {}'.format(e))
+        abort(500, 'Unexpected error')
+
+    return redirect(url_for('capture_mode.ui_config_capture_mode'))
+
+
+@capture_mode.route(ENDPOINTS[SET_STATUS_CAPTURE_MODE], methods=['POST'])
+def set_status_capture_mode():
+    """
+    Set the status of the capture mode
+
+    parameters:
+        -   name: status
+            type: bool
+            in: form
+            required: true
+            description: Set capture mode to on / off
+    responses:
+        200:
+            description: Status to set
+        500:
+            description: Unexpected Error
+
+    :return:
+    """
+    capture_controller = get_capture_controller()
+    status = request.form.get(FORM_STATUS, '')
+    try:
+        capture_controller.update_capturing_status(status)
     except Exception as e:
         current_app.logger.exception('Unexpected exception {}'.format(e))
         abort(500, 'Unexpected error')

@@ -6,8 +6,9 @@ from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
 from flask import render_template, abort, redirect
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE, CONFIG_CAPTURE_MODE,\
-    get_capture_controller, FORM_CAPTURE_INTERVAL
+from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE, CONFIG_CAPTURE_MODE, \
+    FORM_CAPTURE_INTERVAL
+from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 
 
 class TestCaptureModeView(BaseTestClass):
