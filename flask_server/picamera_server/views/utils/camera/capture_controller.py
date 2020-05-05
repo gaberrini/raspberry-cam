@@ -113,7 +113,7 @@ def init_capture_controller():
     CAPTURE_CONTROLLER = CaptureController()
 
 
-def get_capture_controller() -> CaptureController:
+def get_capture_controller() -> Optional[CaptureController]:
     """
     Return the capture controller.
     :return:
