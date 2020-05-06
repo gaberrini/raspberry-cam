@@ -10,6 +10,8 @@
 .column img {
   opacity: 0.8;
   cursor: pointer;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 .column img:hover {
