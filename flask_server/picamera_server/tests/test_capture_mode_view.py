@@ -3,6 +3,7 @@ Test camera view
 """
 import time
 import shutil
+import os
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
@@ -231,16 +232,13 @@ class TestCaptureModeView(BaseTestClass):
         :return:
         """
         # Mock
-        # Lets kill the capture thread with an exception
+        # Lets kill the capture thread with an exception, after 3 sleeps it will stop, so it will store 4 images
         time_mock.sleep.side_effect = [time.sleep, time.sleep, time.sleep, Exception('Test')]
         redirect_mock.side_effect = redirect
-        capture_controller = get_capture_controller()
         expected_images = 4
-        capture_interval = 0
-        sleep_time = 3
         test_frames = get_camera_controller().frames + [get_camera_controller().frames[0]]
 
-        capture_controller.CAPTURE_INTERVAL = capture_interval
+        get_capture_controller().CAPTURE_INTERVAL = 0
 
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
@@ -249,7 +247,7 @@ class TestCaptureModeView(BaseTestClass):
             # Validation 1
             self.assertEqual(302, response.status_code)
             self.assertEqual(get_capture_controller().CAPTURING_STATUS, True)
-            time.sleep(sleep_time)
+            time.sleep(3)
 
             # When 2
             response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data={FORM_STATUS: 'false'})
@@ -258,10 +256,12 @@ class TestCaptureModeView(BaseTestClass):
             self.assertEqual(302, response.status_code)
             self.assertEqual(get_capture_controller().CAPTURING_STATUS, False)
             self.assertEqual(get_capture_controller().CAPTURING_THREAD, None)
-            captures = CapturedImage.query.all()
-            captures_files = captured_images_files()
-            self.assertEqual(len(captures), expected_images)
-            self.assertEqual(len(captures_files), expected_images)
+            db_captures = CapturedImage.query.all()
+            db_captures_files_paths = [os.path.join(self.app.config['CAPTURES_DIR'], capture.relative_path)
+                                       for capture in db_captures]
+            self.assertEqual(len(db_captures), expected_images)
+            self.assertEqual(db_captures_files_paths, captured_images_files(),
+                             'The number of files in db is different than the number stored of files')
 
     @patch('picamera_server.views.capture_mode_view.get_capture_controller')
     @patch('picamera_server.views.capture_mode_view.abort')
