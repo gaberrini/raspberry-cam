@@ -1,3 +1,4 @@
+// Expand capture on click
 function expandCapture(image) {
     // Get the expanded image
     let expandImg = document.getElementById("expandedImg");
@@ -17,6 +18,7 @@ function expandCapture(image) {
     expandedImgContainer.scrollIntoView();
 }
 
+// Close expanded capture with Escape
 document.body.addEventListener("keydown", (event) => {
     if(event.code === 'Escape') {
         let expandedImgContainer = document.querySelector("#expandedImgContainer > div");
