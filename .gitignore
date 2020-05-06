@@ -4,3 +4,4 @@
 */htmlcov/*
 *.log
 *.db
+*.pyc

@@ -9,7 +9,8 @@ from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.home_view import TEMPLATES, UI_HOME
 from picamera_server.views.home_view import ENDPOINTS as HOME_VIEW_ENDPOINTS
 from picamera_server.views.camera_view import ENDPOINTS as CAMERA_VIEW_ENDPOINTS, UI_CAMERA_STREAM
-from picamera_server.views.capture_mode_view import ENDPOINTS as CAPTURE_MODE_VIEW_ENDPOINTS, UI_CONFIG_CAPTURE_MODE
+from picamera_server.views.capture_mode_view import ENDPOINTS as CAPTURE_MODE_VIEW_ENDPOINTS, UI_CONFIG_CAPTURE_MODE,\
+    UI_CAPTURES_PAGINATED_DEFAULT
 
 
 class TestHomeView(BaseTestClass):
@@ -27,7 +28,8 @@ class TestHomeView(BaseTestClass):
         expected_header_elements = [
             '//a[@class="nav-link" and @href="{}"]'.format(HOME_VIEW_ENDPOINTS[UI_HOME]),
             '//a[@class="nav-link" and @href="{}"]'.format(CAMERA_VIEW_ENDPOINTS[UI_CAMERA_STREAM]),
-            '//a[@class="nav-link" and @href="{}"]'.format(CAPTURE_MODE_VIEW_ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+            '//a[@class="nav-link" and @href="{}"]'.format(CAPTURE_MODE_VIEW_ENDPOINTS[UI_CONFIG_CAPTURE_MODE]),
+            '//a[@class="nav-link" and @href="{}"]'.format(CAPTURE_MODE_VIEW_ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT])
         ]
 
         # When

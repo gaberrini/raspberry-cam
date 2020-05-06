@@ -13,10 +13,14 @@ def create_test_captured_images(number: int = 1) -> List[CapturedImage]:
     """
     test_frames = TestCamera().frames
     created_captures = list()
-    for i in range(1, number+1):
-        test_capture = CapturedImage(image=test_frames[(len(test_frames)-1) % i])
+    frame_number = 0
+    total_test_frames = len(test_frames)
+    for i in range(number):
+        test_capture = CapturedImage(image=test_frames[frame_number])
         created_captures.append(test_capture)
         db.session.add(test_capture)
+        frame_number += 1
+        frame_number = frame_number if total_test_frames > frame_number else 0
     db.session.commit()
 
     return created_captures

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block style %}
+<link href="/static/css/camera/ui/captures/ui_paginated_captures.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <!-- The grid: four columns -->
+    {% for captures_grid in data.captures_grids %}
+    <div class="row">
+        {% for capture in captures_grid %}
+        <div class="column">
+            <img src="data:image/format;base64,{{ capture.image }}" alt="{{ capture.date }}" onclick="expandCapture(this);">
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<div id="expandedImgContainer" class="container">
+    <!-- The expanding image container -->
+    <div class="expand-container">
+        <!-- Close the image -->
+        <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+
+        <!-- Expanded image -->
+        <img id="expandedImg" style="width:100%">
+
+        <!-- Image text -->
+        <div id="imgtext"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/camera/ui/captures/ui_paginated_captures.js"></script>
+{% endblock %}

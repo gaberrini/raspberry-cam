@@ -1,5 +1,7 @@
+import base64
 from picamera_server.models import CapturedImage
 from picamera_server.views.utils.camera.capture_controller import get_capture_controller
+from picamera_server.views.helpers.captures import get_captures_grids
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
 from jinja2 import TemplateNotFound
 
@@ -26,6 +28,7 @@ ENDPOINTS = {
 
 TEMPLATES = {
     UI_CONFIG_CAPTURE_MODE: 'camera/ui/captures.html',
+    UI_CAPTURES_PAGINATED: 'camera/ui/captures/ui_paginated_captures.html'
 }
 
 
@@ -43,7 +46,7 @@ def ui_config_capture_mode():
     try:
         capture_controller = get_capture_controller()
         data = capture_controller.get_capture_controller_status()
-        return render_template(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section='capture', data=data)
+        return render_template(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section='capture config', data=data)
     except TemplateNotFound:
         abort(404)
 
@@ -156,12 +159,15 @@ def ui_captures_paginated(page_number: int = 1):
     :return:
     """
     items_per_page = current_app.config['ITEMS_PER_PAGE']
-    captures = CapturedImage.query.paginate(page_number, items_per_page, False)
+    db_captures = CapturedImage.query.paginate(page_number, items_per_page, False)
+    template_captures_grids = get_captures_grids(db_captures.items)
+
     template_data = {
-        'captures': captures.items,
-        'total_captures': captures.total,
-        'current_page': captures.page,
-        'next_page': captures.next_num,
-        'prev_page': captures.prev_num
+        'captures_grids': template_captures_grids,
+        'total_captures': db_captures.total,
+        'current_page': db_captures.page,
+        'next_page': db_captures.next_num,
+        'prev_page': db_captures.prev_num
     }
-    return redirect(url_for('capture_mode.ui_config_capture_mode'))
+
+    return render_template(TEMPLATES[UI_CAPTURES_PAGINATED], data=template_data, section='captures')
