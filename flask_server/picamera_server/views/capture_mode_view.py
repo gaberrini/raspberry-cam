@@ -159,7 +159,7 @@ def ui_captures_paginated(page_number: int = 1):
     :return:
     """
     items_per_page = current_app.config['ITEMS_PER_PAGE']
-    db_captures = CapturedImage.query.paginate(page_number, items_per_page, False)
+    db_captures = CapturedImage.query.paginate(int(page_number), items_per_page, False)
     template_captures_grids = get_captures_grids(db_captures.items)
 
     template_data = {
