@@ -40,7 +40,7 @@ In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/stream` there will be a l
 
 The capturing mode will store captures from the camera every X seconds while it's activated. The capture interval will be configurable.
 
-In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/capture` you will find the configuration and management section for the capturing mode
+In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/captures/config` you will find the configuration and management section for the capturing mode
 
 
 # System setup
