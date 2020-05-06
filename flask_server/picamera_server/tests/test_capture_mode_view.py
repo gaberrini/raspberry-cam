@@ -8,8 +8,8 @@ from jinja2 import TemplateNotFound
 from flask import render_template, abort, redirect
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE, SET_CAPT_INTERVAL_VALUE, \
-    FORM_CAPTURE_INTERVAL, FORM_STATUS, SET_STATUS_CAPTURE_MODE
+from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
+    SET_CAPT_INTERVAL_VALUE, FORM_CAPTURE_INTERVAL, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL
 from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
 from picamera_server.views.utils.camera.test_camera import TestCamera
@@ -32,9 +32,11 @@ class TestCaptureModeView(BaseTestClass):
         expected_section = 'capture'
         expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
         expected_input_xpath = '//input[@min={} and @max={} and' \
-                               ' @value={}]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
-                                                    capture_controller.MAX_CAPTURE_INTERVAL,
-                                                    capture_controller.CAPTURE_INTERVAL)
+                               ' @value={} and @name="{}"]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
+                                                                 capture_controller.MAX_CAPTURE_INTERVAL,
+                                                                 capture_controller.CAPTURE_INTERVAL,
+                                                                 FORM_CAPTURE_INTERVAL)
+        expected_input_status_xpath = '//input[@name="{}" and @value="true"]'.format(FORM_STATUS)
 
         # When
         response = self.client.get(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
@@ -45,6 +47,7 @@ class TestCaptureModeView(BaseTestClass):
         input_element = html_parser.xpath(expected_input_xpath)
 
         self.assertEqual(200, response.status_code)
+        self.assertTrue(html_parser.xpath(expected_input_status_xpath), 'Input for capture mode status not found')
         self.assertTrue(form_element, 'Form to update capture interval not found')
         self.assertTrue(input_element, 'Input to show and update capture interval not found')
         mock_render_template.assert_called_once_with(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section=expected_section,

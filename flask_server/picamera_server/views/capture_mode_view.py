@@ -14,7 +14,7 @@ SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/capture',
     SET_CAPT_INTERVAL_VALUE: '/camera/config/capture_interval',
-    SET_STATUS_CAPTURE_MODE: '/camera/config/set_capture_mode'
+    SET_STATUS_CAPTURE_MODE: '/camera/config/set_status_capture_mode'
 }
 
 TEMPLATES = {
