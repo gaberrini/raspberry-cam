@@ -2,6 +2,7 @@
 Test camera view
 """
 import time
+import shutil
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
@@ -18,6 +19,14 @@ from picamera_server.tests.helpers.captured_image import create_test_captured_im
 
 
 class TestCaptureModeView(BaseTestClass):
+
+    def setUp(self) -> None:
+        self.db.create_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
+
+    def tearDown(self) -> None:
+        self.db.drop_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
     @patch('picamera_server.views.capture_mode_view.render_template')
     def test_get_ui_config_capture_mode(self, mock_render_template: MagicMock):
@@ -230,6 +239,7 @@ class TestCaptureModeView(BaseTestClass):
         capture_interval = 0
         sleep_time = 3
         test_frames = get_camera_controller().frames + [get_camera_controller().frames[0]]
+
         capture_controller.CAPTURE_INTERVAL = capture_interval
 
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
@@ -249,11 +259,9 @@ class TestCaptureModeView(BaseTestClass):
             self.assertEqual(get_capture_controller().CAPTURING_STATUS, False)
             self.assertEqual(get_capture_controller().CAPTURING_THREAD, None)
             captures = CapturedImage.query.all()
+            captures_files = captured_images_files()
             self.assertEqual(len(captures), expected_images)
-            self.assertEqual(captures[0].image, test_frames[0])
-            self.assertEqual(captures[1].image, test_frames[1])
-            self.assertEqual(captures[2].image, test_frames[2])
-            self.assertEqual(captures[3].image, test_frames[0])
+            self.assertEqual(len(captures_files), expected_images)
 
     @patch('picamera_server.views.capture_mode_view.get_capture_controller')
     @patch('picamera_server.views.capture_mode_view.abort')
