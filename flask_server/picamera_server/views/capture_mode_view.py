@@ -1,3 +1,4 @@
+from picamera_server.models import CapturedImage
 from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
 from jinja2 import TemplateNotFound
@@ -9,18 +10,22 @@ FORM_CAPTURE_INTERVAL = 'capture_interval'
 FORM_STATUS = 'status'
 
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
+UI_CAPTURES_PAGINATED_DEFAULT = 'UI_CAPTURES_PAGINATED_DEFAULT'
+UI_CAPTURES_PAGINATED = 'UI_CAPTURES_PAGINATED'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 REMOVE_ALL_CAPTURES = 'REMOVE_ALL_CAPTURES'
 ENDPOINTS = {
-    UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures',
+    UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config',
+    UI_CAPTURES_PAGINATED_DEFAULT: '/camera/ui/captures/',
+    UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>',
     SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval',
     SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode',
     REMOVE_ALL_CAPTURES: '/camera/captures/remove'
 }
 
 TEMPLATES = {
-    UI_CONFIG_CAPTURE_MODE: 'camera/ui/capture.html'
+    UI_CONFIG_CAPTURE_MODE: 'camera/ui/captures.html',
 }
 
 
@@ -138,4 +143,25 @@ def remove_all_captures():
         current_app.logger.exception('Unexpected exception {}'.format(e))
         abort(500, 'Unexpected error')
 
+    return redirect(url_for('capture_mode.ui_config_capture_mode'))
+
+
+@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT], methods=['GET'])
+@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED], methods=['GET'])
+def ui_captures_paginated(page_number: int = 1):
+    """
+    Show the captures paginated
+
+    :param page_number:
+    :return:
+    """
+    items_per_page = current_app.config['ITEMS_PER_PAGE']
+    captures = CapturedImage.query.paginate(page_number, items_per_page, False)
+    template_data = {
+        'captures': captures.items,
+        'total_captures': captures.total,
+        'current_page': captures.page,
+        'next_page': captures.next_num,
+        'prev_page': captures.prev_num
+    }
     return redirect(url_for('capture_mode.ui_config_capture_mode'))

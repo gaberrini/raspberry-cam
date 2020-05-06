@@ -104,6 +104,8 @@ class CaptureController(object, metaclass=Singleton):
                 new_capture = CapturedImage(image=capture)
                 db.session.add(new_capture)
                 db.session.commit()
+                # Todo: when the thread is sleep and we start the interval again or reduce the interval, it still
+                # Todo: need to wait for this sleep to finish, this needs to be improved
                 time.sleep(self.CAPTURE_INTERVAL)
         except Exception as e:
             app.logger.exception('Exception in capture thread {}'.format(e))

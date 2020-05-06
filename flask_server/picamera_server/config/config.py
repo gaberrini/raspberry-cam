@@ -20,6 +20,9 @@ DEFAULT_CAPTURE_INTERVAL = os.environ.get('DEFAULT_CAPTURE_INTERVAL', 60)
 MIN_CAPTURE_INTERVAL = 0
 MAX_CAPTURE_INTERVAL = 600
 
+# Endpoint settings
+ITEMS_PER_PAGE = 20
+
 
 class Config(object):
     """Base config."""
@@ -30,6 +33,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(16))
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', DEFAULT_SQL_LITE_DATABASE)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ITEMS_PER_PAGE = ITEMS_PER_PAGE
 
 
 class DevelopmentConfig(Config):
