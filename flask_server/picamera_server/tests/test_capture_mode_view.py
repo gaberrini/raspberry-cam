@@ -9,10 +9,11 @@ from flask import render_template, abort, redirect
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
-    SET_CAPT_INTERVAL_VALUE, FORM_CAPTURE_INTERVAL, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL
+    SET_CAPT_INTERVAL_VALUE, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL, REMOVE_ALL_CAPTURES
 from picamera_server.views.utils.camera.capture_controller import get_capture_controller
 from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
 from picamera_server.views.utils.camera.test_camera import TestCamera
+from picamera_server.tests.utils.feeder_captured_image import create_test_captured_images
 
 
 class TestCaptureModeView(BaseTestClass):
@@ -30,7 +31,9 @@ class TestCaptureModeView(BaseTestClass):
         mock_render_template.side_effect = render_template
         expected_data = capture_controller.get_capture_controller_status()
         expected_section = 'capture'
-        expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
+        expected_edit_interval_form_xpath = '//form[@action="{}" and' \
+                                            ' @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
+        expected_delete_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[REMOVE_ALL_CAPTURES])
         expected_input_xpath = '//input[@min={} and @max={} and' \
                                ' @value={} and @name="{}"]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
                                                                    capture_controller.MAX_CAPTURE_INTERVAL,
@@ -43,11 +46,12 @@ class TestCaptureModeView(BaseTestClass):
 
         # Validation
         html_parser = html.fromstring(str(response.data))
-        form_element = html_parser.xpath(expected_form_xpath)
+        form_element = html_parser.xpath(expected_edit_interval_form_xpath)
         input_element = html_parser.xpath(expected_input_xpath)
 
         self.assertEqual(200, response.status_code)
         self.assertTrue(html_parser.xpath(expected_input_status_xpath), 'Input for capture mode status not found')
+        self.assertTrue(html_parser.xpath(expected_delete_form_xpath), 'Input for remove captures not found')
         self.assertTrue(form_element, 'Form to update capture interval not found')
         self.assertTrue(input_element, 'Input to show and update capture interval not found')
         mock_render_template.assert_called_once_with(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section=expected_section,
@@ -267,6 +271,53 @@ class TestCaptureModeView(BaseTestClass):
 
         # When
         response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data=data)
+
+        # Validation
+        self.assertEqual(500, response.status_code)
+        self.assertIn('Unexpected error', str(response.data))
+        mock_abort.assert_called_once_with(500, 'Unexpected error')
+
+    @patch('picamera_server.views.capture_mode_view.redirect')
+    def test_post_remove_all_captures(self, redirect_mock: MagicMock):
+        """
+        Test post to remove all the stored captures
+
+        :param redirect_mock: MagicMock of flask redirect
+        :return:
+        """
+        # Mock
+        redirect_mock.side_effect = redirect
+        expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+        create_test_captured_images(5)
+
+        # When
+        response = self.client.post(ENDPOINTS[REMOVE_ALL_CAPTURES])
+
+        # Validation
+        html_tree = html.fromstring(str(response.data))
+        self.assertTrue(html_tree.xpath(expected_element), 'Redirect not found')
+        self.assertEqual(302, response.status_code)
+        self.assertEqual(get_capture_controller().get_total_captures(), 0)
+
+    @patch('picamera_server.views.capture_mode_view.get_capture_controller')
+    @patch('picamera_server.views.capture_mode_view.abort')
+    def test_post_remove_all_captures_exception(self, mock_abort: MagicMock, mock_get_capture_controller: MagicMock):
+        """
+        Test post to remove all the stored captures and there is an exception
+
+        :param mock_abort: MagicMock of flask abort
+        :param mock_get_capture_controller: Magic mock of get_capture_controller
+        :return:
+        """
+        # Mock
+        # Mock
+        mock_abort.side_effect = abort
+        mock_capture_controller = MagicMock()
+        mock_capture_controller.remove_all_captures.side_effect = Exception('Test')
+        mock_get_capture_controller.return_value = mock_capture_controller
+
+        # When
+        response = self.client.post(ENDPOINTS[REMOVE_ALL_CAPTURES])
 
         # Validation
         self.assertEqual(500, response.status_code)

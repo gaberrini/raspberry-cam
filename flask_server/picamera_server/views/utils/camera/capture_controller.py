@@ -60,6 +60,7 @@ class CaptureController(object, metaclass=Singleton):
             - min_interval
             - capturing_status
             - ui_capture_mode_status used by frontend
+            - ui_total_captures number of captures stored
 
         :return:
         """
@@ -68,7 +69,8 @@ class CaptureController(object, metaclass=Singleton):
                 'min_interval': self.MIN_CAPTURE_INTERVAL,
                 'max_interval': self.MAX_CAPTURE_INTERVAL,
                 'capturing_status': self.CAPTURING_STATUS,
-                'ui_capture_mode_status': ui_capture_mode_status}
+                'ui_capture_mode_status': ui_capture_mode_status,
+                'ui_total_captures': self.get_total_captures()}
 
     def update_capturing_status(self, new_status: str):
         """
@@ -107,6 +109,24 @@ class CaptureController(object, metaclass=Singleton):
             app.logger.exception('Exception in capture thread {}'.format(e))
         finally:
             self.CAPTURING_THREAD = None
+
+    @staticmethod
+    def get_total_captures() -> int:
+        """
+        Return the total number of stored captures
+        :return:
+        """
+        return CapturedImage.query.count()
+
+    @staticmethod
+    def remove_all_captures() -> int:
+        """
+        Remove all the stored captures
+        :return: Number of deleted rows
+        """
+        deleted = CapturedImage.query.delete()
+        db.session.commit()
+        return deleted
 
 
 def init_capture_controller():

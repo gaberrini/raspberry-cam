@@ -11,10 +11,12 @@ FORM_STATUS = 'status'
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
+REMOVE_ALL_CAPTURES = 'REMOVE_ALL_CAPTURES'
 ENDPOINTS = {
-    UI_CONFIG_CAPTURE_MODE: '/camera/ui/capture',
-    SET_CAPT_INTERVAL_VALUE: '/camera/config/capture_interval',
-    SET_STATUS_CAPTURE_MODE: '/camera/config/set_status_capture_mode'
+    UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures',
+    SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval',
+    SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode',
+    REMOVE_ALL_CAPTURES: '/camera/captures/remove'
 }
 
 TEMPLATES = {
@@ -109,6 +111,29 @@ def set_status_capture_mode():
 
     try:
         capture_controller.update_capturing_status(status)
+    except Exception as e:
+        current_app.logger.exception('Unexpected exception {}'.format(e))
+        abort(500, 'Unexpected error')
+
+    return redirect(url_for('capture_mode.ui_config_capture_mode'))
+
+
+@capture_mode.route(ENDPOINTS[REMOVE_ALL_CAPTURES], methods=['POST'])
+def remove_all_captures():
+    """
+    Remove all the stored captures
+    responses:
+        200:
+            description: All captures removed
+        500:
+            description: Unexpected Error
+
+    :return:
+    """
+    capture_controller = get_capture_controller()
+
+    try:
+        capture_controller.remove_all_captures()
     except Exception as e:
         current_app.logger.exception('Unexpected exception {}'.format(e))
         abort(500, 'Unexpected error')

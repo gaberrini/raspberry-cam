@@ -7,8 +7,8 @@
         The interval range is between {{ data['min_interval'] }} seconds and {{ data['max_interval'] }} seconds.
         <br/>
         {% include 'camera/ui/capture/set_capt_interval_value.html' %}
-        <br/>
         {% include 'camera/ui/capture/set_status_capture_mode.html' %}
+        {% include 'camera/ui/capture/remove_captures.html' %}
     <p/>
 </div>
 {% endblock %}

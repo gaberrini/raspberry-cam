@@ -1,0 +1,9 @@
+<br/>
+<strong>The total number of stored captures is {{ data['ui_total_captures'] }}.</strong>
+<br/>
+<form class="form-inline" action="{{ url_for('capture_mode.remove_all_captures') }}" method="post">
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="number" class="form-control" value="{{ data['ui_total_captures'] }}" disabled>
+    </div>
+    <button type="submit" class="btn btn-danger mb-2">Remove all</button>
+</form>
