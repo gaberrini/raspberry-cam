@@ -177,7 +177,7 @@ class TestCaptureModeView(BaseTestClass):
 
         # Validation
         html_tree = html.fromstring(str(response.data))
-        self.assertTrue(html_tree.xpath(expected_element))
+        self.assertTrue(html_tree.xpath(expected_element), 'Redirect not found')
         self.assertEqual(302, response.status_code)
         self.assertEqual(get_capture_controller().CAPTURE_INTERVAL, test_interval)
 

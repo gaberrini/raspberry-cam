@@ -40,7 +40,7 @@ class TestHomeView(BaseTestClass):
         mock_render_template.assert_called_once_with(TEMPLATES[UI_HOME], section='home')
 
         for element in expected_header_elements:
-            self.assertEqual(len(html_tree.xpath(element)), 1)
+            self.assertTrue(html_tree.xpath(element), 'Header element not found')
 
     @patch('picamera_server.views.home_view.abort')
     @patch('picamera_server.views.home_view.render_template')
