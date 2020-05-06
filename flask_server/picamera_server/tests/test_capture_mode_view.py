@@ -14,7 +14,7 @@ from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CON
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.camera.test_camera import TestCamera
-from picamera_server.tests.utils.feeder_captured_image import create_test_captured_images
+from picamera_server.tests.helpers.feeder_captured_image import create_test_captured_images
 
 
 class TestCaptureModeView(BaseTestClass):
