@@ -3,7 +3,7 @@ import io
 import os
 import time
 from threading import Thread
-from typing import Union, Optional
+from typing import Union, Optional, List
 from PIL import Image
 from picamera_server import db, app
 from picamera_server.config.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
@@ -72,7 +72,7 @@ class CaptureController(object, metaclass=Singleton):
         return new_capture
 
     @staticmethod
-    def _create_new_capture() -> None:
+    def create_new_capture() -> None:
         """
         Take a new capture from the camera controller
         Store it as a file and
@@ -159,7 +159,7 @@ class CaptureController(object, metaclass=Singleton):
         """
         try:
             while self.CAPTURING_STATUS:
-                self._create_new_capture()
+                self.create_new_capture()
                 # Todo: when the thread is sleep and we start the interval again or reduce the interval, it still
                 # Todo: need to wait for this sleep to finish, this needs to be improved
                 time.sleep(self.CAPTURE_INTERVAL)
@@ -177,14 +177,31 @@ class CaptureController(object, metaclass=Singleton):
         return CapturedImage.query.count()
 
     @staticmethod
-    def remove_all_captures() -> int:
+    def _delete_captured_images_files(captured_images: List[CapturedImage]) -> None:
+        """
+        Delete the file of each captured_image in the list
+
+        :param captured_images:
+        :return:
+        """
+        for captured_image in captured_images:
+            file_path = os.path.join(app.config['CAPTURES_DIR'], captured_image.relative_path)
+            try:
+                os.remove(file_path)
+            except FileNotFoundError:
+                pass
+
+    @staticmethod
+    def remove_all_captures() -> None:
         """
         Remove all the stored captures
-        :return: Number of deleted rows
+        :return:
         """
-        deleted = CapturedImage.query.delete()
+        entries_to_delete = CapturedImage.query.all()
+        CaptureController._delete_captured_images_files(entries_to_delete)
+        CapturedImage.query.delete()
         db.session.commit()
-        return deleted
+        return
 
 
 def init_capture_controller():

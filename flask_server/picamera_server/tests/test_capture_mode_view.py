@@ -14,7 +14,7 @@ from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CON
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.camera.test_camera import TestCamera
-from picamera_server.tests.helpers.feeder_captured_image import create_test_captured_images
+from picamera_server.tests.helpers.captured_image import create_test_captured_images, captured_images_files
 
 
 class TestCaptureModeView(BaseTestClass):
@@ -288,7 +288,7 @@ class TestCaptureModeView(BaseTestClass):
         :param redirect_mock: MagicMock of flask redirect
         :return:
         """
-        # Mock
+        # Mock and data
         redirect_mock.side_effect = redirect
         expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
         create_test_captured_images(5)
@@ -301,6 +301,7 @@ class TestCaptureModeView(BaseTestClass):
         self.assertTrue(html_tree.xpath(expected_element), 'Redirect not found')
         self.assertEqual(302, response.status_code)
         self.assertEqual(get_capture_controller().get_total_captures(), 0)
+        self.assertEqual(len(captured_images_files()), 0)
 
     @patch('picamera_server.views.capture_mode_view.get_capture_controller')
     @patch('picamera_server.views.capture_mode_view.abort')
