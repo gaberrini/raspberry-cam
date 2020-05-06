@@ -50,10 +50,10 @@ def create_app(app_env: str = APP_ENV_DEVELOPMENT) -> Flask:
     :param app_env: App env type
     :return: Flask app
     """
+    # Configure logging and select config class object
     set_up_logging(app_env)
     config_object_class = DevelopmentConfig
-
-    # Set TestCamera for the camera class when running with test environment
+    # Set TestingConfig when running with test environment
     if app_env == APP_ENV_TESTING:
         config_object_class = TestingConfig
 
