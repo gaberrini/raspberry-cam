@@ -14,4 +14,12 @@ function expandCapture(image) {
     let expandedImgContainer = document.getElementById("expandedImgContainer");
     // Append after the row of the grid
     image.parentElement.parentElement.append(expandedImgContainer);
+    expandedImgContainer.scrollIntoView();
 }
+
+document.body.addEventListener("keydown", (event) => {
+    if(event.code === 'Escape') {
+        let expandedImgContainer = document.querySelector("#expandedImgContainer > div");
+        expandedImgContainer.style.display = 'none';
+    }
+});
