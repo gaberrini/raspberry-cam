@@ -33,9 +33,9 @@ class TestCaptureModeView(BaseTestClass):
         expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
         expected_input_xpath = '//input[@min={} and @max={} and' \
                                ' @value={} and @name="{}"]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
-                                                                 capture_controller.MAX_CAPTURE_INTERVAL,
-                                                                 capture_controller.CAPTURE_INTERVAL,
-                                                                 FORM_CAPTURE_INTERVAL)
+                                                                   capture_controller.MAX_CAPTURE_INTERVAL,
+                                                                   capture_controller.CAPTURE_INTERVAL,
+                                                                   FORM_CAPTURE_INTERVAL)
         expected_input_status_xpath = '//input[@name="{}" and @value="true"]'.format(FORM_STATUS)
 
         # When
