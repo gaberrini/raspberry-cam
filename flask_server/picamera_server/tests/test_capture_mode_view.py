@@ -28,7 +28,7 @@ class TestCaptureModeView(BaseTestClass):
         # Mock and data
         capture_controller = get_capture_controller()
         mock_render_template.side_effect = render_template
-        expected_data = capture_controller.get_interval_values()
+        expected_data = capture_controller.get_capture_controller_status()
         expected_section = 'capture'
         expected_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
         expected_input_xpath = '//input[@min={} and @max={} and' \

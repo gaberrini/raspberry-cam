@@ -35,7 +35,7 @@ def ui_config_capture_mode():
     """
     try:
         capture_controller = get_capture_controller()
-        data = capture_controller.get_interval_values()
+        data = capture_controller.get_capture_controller_status()
         return render_template(TEMPLATES[UI_CONFIG_CAPTURE_MODE], section='capture', data=data)
     except TemplateNotFound:
         abort(404)

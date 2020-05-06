@@ -1,0 +1,22 @@
+<br/>
+    <strong>Capture mode status</strong>
+<br/>
+<form class="form-inline" action="{{ url_for('capture_mode.set_status_capture_mode') }}" method="post">
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="text" class="form-control" value="{{ data['ui_capture_mode_status'] }}" disabled>
+        <input type="hidden" name="status"
+            {% if data['capturing_status'] %}
+                value="false"
+            {% else %}
+                value="true"
+            {% endif %}
+        >
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">
+        {% if data['capturing_status'] %}
+            Stop
+        {% else %}
+            Start
+        {% endif %}
+    </button>
+</form>

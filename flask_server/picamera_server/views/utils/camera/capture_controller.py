@@ -51,19 +51,24 @@ class CaptureController(object, metaclass=Singleton):
         else:
             raise ValueError('Invalid capture interval value')
 
-    def get_interval_values(self) -> dict:
+    def get_capture_controller_status(self) -> dict:
         """
-        Return the values for the interval as a dict.
+        Return the values for the controller properties.
         Values returned:
             - capture_interval
             - max_interval
             - min_interval
+            - capturing_status
+            - ui_capture_mode_status used by frontend
 
         :return:
         """
+        ui_capture_mode_status = 'RUNNING' if self.CAPTURING_STATUS else 'STOPPED'
         return {'capture_interval': self.CAPTURE_INTERVAL,
                 'min_interval': self.MIN_CAPTURE_INTERVAL,
-                'max_interval': self.MAX_CAPTURE_INTERVAL}
+                'max_interval': self.MAX_CAPTURE_INTERVAL,
+                'capturing_status': self.CAPTURING_STATUS,
+                'ui_capture_mode_status': ui_capture_mode_status}
 
     def update_capturing_status(self, new_status: str):
         """
