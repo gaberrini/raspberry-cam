@@ -1,6 +1,10 @@
+import datetime
+import io
+import os
 import time
 from threading import Thread
 from typing import Union, Optional
+from PIL import Image
 from picamera_server import db, app
 from picamera_server.config.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
     MAX_CAPTURE_INTERVAL
@@ -24,6 +28,63 @@ class CaptureController(object, metaclass=Singleton):
     CAPTURE_INTERVAL: int = DEFAULT_CAPTURE_INTERVAL
     MAX_CAPTURE_INTERVAL: int = MAX_CAPTURE_INTERVAL
     MIN_CAPTURE_INTERVAL: int = MIN_CAPTURE_INTERVAL
+
+    @staticmethod
+    def _save_capture_to_file(capture: bytes) -> str:
+        """
+        Save the capture as bytes as a file.
+        It will be stored in the CAPTURES_DIR.
+        Inside the dir the captures will be split in folders by days.
+        The folder naming format will be %y-%m-%d
+
+        :param capture:
+        :return: Relative path of the file from the CAPTURES_DIR
+        """
+        captured_image = Image.open(io.BytesIO(capture))
+        current_time = datetime.datetime.now()
+        timestamp = current_time.strftime('%y-%m-%d-%H-%M-%S-%f')
+        day_folder = '{year}-{month}-{day}'.format(year=current_time.year,
+                                                   month=current_time.month,
+                                                   day=current_time.day)
+        relative_path = os.path.join(day_folder, '{}.jpg'.format(timestamp))
+        file_path = os.path.join(app.config['CAPTURES_DIR'], relative_path)
+
+        try:
+            captured_image.save(file_path, 'JPEG')
+        # If the day folder is not created we create it and save the image
+        except FileNotFoundError:
+            os.makedirs(os.path.dirname(file_path))
+            captured_image.save(file_path, 'JPEG')
+
+        return relative_path
+
+    @staticmethod
+    def _new_captured_image_db_entry(relative_path: str) -> CapturedImage:
+        """
+        Create a new CapturedImage entry in the db
+
+        :param relative_path: Relative path to assign to the new entry
+        :return:
+        """
+        new_capture = CapturedImage(relative_path=relative_path)
+        db.session.add(new_capture)
+        db.session.commit()
+        return new_capture
+
+    @staticmethod
+    def _create_new_capture() -> None:
+        """
+        Take a new capture from the camera controller
+        Store it as a file and
+        Create the CapturedImage entry in db
+
+        :return:
+        """
+        camera_controller = get_camera_controller()
+        capture_as_bytes = camera_controller.get_frame()
+
+        relative_file_path = CaptureController._save_capture_to_file(capture_as_bytes)
+        CaptureController._new_captured_image_db_entry(relative_file_path)
 
     def _valid_capture_interval(self, capture_interval: Union[str, int]) -> bool:
         """
@@ -97,13 +158,8 @@ class CaptureController(object, metaclass=Singleton):
         :return:
         """
         try:
-            camera_controller = get_camera_controller()
-
             while self.CAPTURING_STATUS:
-                capture = camera_controller.get_frame()
-                new_capture = CapturedImage(image=capture)
-                db.session.add(new_capture)
-                db.session.commit()
+                self._create_new_capture()
                 # Todo: when the thread is sleep and we start the interval again or reduce the interval, it still
                 # Todo: need to wait for this sleep to finish, this needs to be improved
                 time.sleep(self.CAPTURE_INTERVAL)
