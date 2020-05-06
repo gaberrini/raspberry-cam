@@ -5,7 +5,7 @@ from picamera_server import db, app
 from picamera_server.config.config import DEFAULT_CAPTURE_INTERVAL, MIN_CAPTURE_INTERVAL,\
     MAX_CAPTURE_INTERVAL
 from picamera_server.models.captured_image import CapturedImage
-from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
+from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.views.helpers.singleton import Singleton
 
 

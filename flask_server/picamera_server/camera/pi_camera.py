@@ -1,7 +1,7 @@
 import io
 import threading
 from picamera_server.views.helpers.singleton import Singleton
-from picamera_server.views.utils.camera.base_camera import Camera
+from picamera_server.camera.base_camera import Camera
 
 
 PI_CAMERA_IMPORTED = False

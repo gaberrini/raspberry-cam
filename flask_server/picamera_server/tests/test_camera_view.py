@@ -6,8 +6,8 @@ from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
 from flask import render_template, abort, Response
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.utils.camera.base_camera import Camera
-from picamera_server.views.utils.camera.test_camera import TestCamera
+from picamera_server.camera.base_camera import Camera
+from picamera_server.camera.test_camera import TestCamera
 from picamera_server.views.camera_view import ENDPOINTS, TEMPLATES, UI_CAMERA_STREAM, VIDEO_FRAME,\
     MIME_TYPE_MULTIPART_FRAME, get_camera_controller
 

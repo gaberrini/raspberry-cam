@@ -7,14 +7,13 @@ from unittest.mock import patch, MagicMock
 from importlib import reload
 from flask import Response
 
-import picamera_server.views.utils.camera.pi_camera as picamera
-from picamera_server.models import CapturedImage
+import picamera_server.camera.pi_camera as picamera
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.camera_view import ENDPOINTS, VIDEO_FRAME, MIME_TYPE_MULTIPART_FRAME, get_camera_controller
-from picamera_server.views.utils.camera.base_camera import Camera
-from picamera_server.views.utils.camera.test_camera import TestCamera
-from picamera_server.views.utils.camera.camera_controllers import set_camera_class, init_camera_controller
-from picamera_server.views.utils.camera.pi_camera import PiCamera
+from picamera_server.camera.base_camera import Camera
+from picamera_server.camera.test_camera import TestCamera
+from picamera_server.camera.camera_controllers import set_camera_class, init_camera_controller
+from picamera_server.camera.pi_camera import PiCamera
 
 
 class TestPiCamera(BaseTestClass):

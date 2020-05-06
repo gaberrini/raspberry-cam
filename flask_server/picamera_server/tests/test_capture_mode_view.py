@@ -11,9 +11,9 @@ from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
     SET_CAPT_INTERVAL_VALUE, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL, REMOVE_ALL_CAPTURES,\
     UI_CAPTURES_PAGINATED_DEFAULT
-from picamera_server.views.utils.camera.capture_controller import get_capture_controller
-from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
-from picamera_server.views.utils.camera.test_camera import TestCamera
+from picamera_server.camera.capture_controller import get_capture_controller
+from picamera_server.camera.camera_controllers import get_camera_controller
+from picamera_server.camera.test_camera import TestCamera
 from picamera_server.tests.utils.feeder_captured_image import create_test_captured_images
 
 
@@ -211,7 +211,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_abort.assert_called_once()
         self.assertEqual(mock_abort.call_args[0][0], 400)
 
-    @patch('picamera_server.views.utils.camera.capture_controller.time')
+    @patch('picamera_server.camera.capture_controller.time')
     @patch('picamera_server.views.capture_mode_view.redirect')
     def test_post_set_status_capture_mode(self, redirect_mock: MagicMock, time_mock: MagicMock):
         """

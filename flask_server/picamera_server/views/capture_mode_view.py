@@ -1,6 +1,5 @@
-import base64
 from picamera_server.models import CapturedImage
-from picamera_server.views.utils.camera.capture_controller import get_capture_controller
+from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.views.helpers.captures import get_captures_grids
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
 from jinja2 import TemplateNotFound

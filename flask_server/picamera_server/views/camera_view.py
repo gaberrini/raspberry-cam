@@ -1,4 +1,4 @@
-from picamera_server.views.utils.camera.camera_controllers import get_camera_controller
+from picamera_server.camera.camera_controllers import get_camera_controller
 from flask import Blueprint, abort, render_template, Response, stream_with_context
 from jinja2 import TemplateNotFound
 

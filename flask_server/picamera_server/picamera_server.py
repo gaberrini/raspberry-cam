@@ -30,9 +30,9 @@ def init_camera_controllers() -> None:
 
     :return:
     """
-    from picamera_server.views.utils.camera.camera_controllers import init_camera_controller, set_camera_class
-    from picamera_server.views.utils.camera.capture_controller import init_capture_controller
-    from picamera_server.views.utils.camera.test_camera import TestCamera
+    from picamera_server.camera.camera_controllers import init_camera_controller, set_camera_class
+    from picamera_server.camera.capture_controller import init_capture_controller
+    from picamera_server.camera.test_camera import TestCamera
 
     # Set TestCamera for the camera class when running with test environment
     if APP_ENV == APP_ENV_TESTING:

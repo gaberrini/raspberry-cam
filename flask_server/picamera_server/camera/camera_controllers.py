@@ -1,6 +1,6 @@
 from typing import Union
-from picamera_server.views.utils.camera.test_camera import TestCamera
-from picamera_server.views.utils.camera.pi_camera import PiCamera, PI_CAMERA_IMPORTED
+from picamera_server.camera.test_camera import TestCamera
+from picamera_server.camera.pi_camera import PiCamera, PI_CAMERA_IMPORTED
 
 # Define the Camera class based on the fact if picamera has been imported
 CAMERA_CLASS = PiCamera if PI_CAMERA_IMPORTED else TestCamera

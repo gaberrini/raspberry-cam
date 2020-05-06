@@ -1,7 +1,7 @@
 from typing import List
 from picamera_server import db
 from picamera_server.models import CapturedImage
-from picamera_server.views.utils.camera.test_camera import TestCamera
+from picamera_server.camera.test_camera import TestCamera
 
 
 def create_test_captured_images(number: int = 1) -> List[CapturedImage]:
