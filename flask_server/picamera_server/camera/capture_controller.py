@@ -59,32 +59,34 @@ class CaptureController(object, metaclass=Singleton):
         return relative_path
 
     @staticmethod
-    def _new_captured_image_db_entry(relative_path: str) -> CapturedImage:
+    def _new_captured_image_db_entry(relative_path: str, date: Optional[str] = None) -> CapturedImage:
         """
         Create a new CapturedImage entry in the db
 
         :param relative_path: Relative path to assign to the new entry
+        :param date: datetime with DB format to assign to the captures
         :return:
         """
-        new_capture = CapturedImage(relative_path=relative_path)
+        new_capture = CapturedImage(relative_path=relative_path, created_at=date)
         db.session.add(new_capture)
         db.session.commit()
         return new_capture
 
     @staticmethod
-    def create_new_capture() -> None:
+    def create_new_capture(date: Optional[str] = None) -> CapturedImage:
         """
         Take a new capture from the camera controller
         Store it as a file and
         Create the CapturedImage entry in db
 
+        :param date: datetime with DB format to assign to the captures
         :return:
         """
         camera_controller = get_camera_controller()
         capture_as_bytes = camera_controller.get_frame()
 
         relative_file_path = CaptureController._save_capture_to_file(capture_as_bytes)
-        CaptureController._new_captured_image_db_entry(relative_file_path)
+        return CaptureController._new_captured_image_db_entry(relative_file_path, date)
 
     def _valid_capture_interval(self, capture_interval: Union[str, int]) -> bool:
         """

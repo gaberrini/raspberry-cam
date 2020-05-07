@@ -4,19 +4,22 @@ Test camera view
 import time
 import shutil
 import os
+import math
+from datetime import datetime, timedelta
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
-from flask import render_template, abort, redirect
+from flask import render_template, abort, redirect, url_for
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
     SET_CAPT_INTERVAL_VALUE, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL, REMOVE_ALL_CAPTURES,\
-    UI_CAPTURES_PAGINATED_DEFAULT
+    UI_CAPTURES_PAGINATED_DEFAULT, UI_CAPTURES_PAGINATED
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.camera.test_camera import TestCamera
 from picamera_server.tests.helpers.captured_image import create_test_captured_images, captured_images_files
+from picamera_server.views.helpers.captures import get_captures_grids, FRONTEND_TS_FORMAT, DB_TS_FORMAT
 
 
 class TestCaptureModeView(BaseTestClass):
@@ -335,3 +338,181 @@ class TestCaptureModeView(BaseTestClass):
         self.assertEqual(500, response.status_code)
         self.assertIn('Unexpected error', str(response.data))
         mock_abort.assert_called_once_with(500, 'Unexpected error')
+
+
+class TestCaptureModeViewPagination(BaseTestClass):
+
+    def setUp(self) -> None:
+        self.db.create_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
+
+    def tearDown(self) -> None:
+        self.db.drop_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
+
+    @patch('picamera_server.views.capture_mode_view.render_template')
+    def test_get_default_endpoint(self, render_template_mock: MagicMock) -> None:
+        """
+        Test the get endpoint without filters or page
+
+        :param render_template_mock: MagicMock of flask render_template
+        :return:
+        """
+        # Mock and data
+        render_template_mock.side_effect = render_template
+        number_test_images = 15
+        total_pages = math.ceil(number_test_images / self.app.config['ITEMS_PER_PAGE'])
+        created_images = create_test_captured_images(number_test_images)
+        expected_grids = get_captures_grids(created_images[:self.app.config['ITEMS_PER_PAGE']])
+        expected_data = {
+            'captures_grids': expected_grids,
+            'total_pages': total_pages,
+            'total_captures': number_test_images,
+            'current_page': 1,
+            'date_from': '',
+            'date_until': ''
+        }
+
+        # When
+        response = self.client.get(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT])
+
+        # Then
+        render_template_mock.assert_called_once_with(TEMPLATES[UI_CAPTURES_PAGINATED],
+                                                     data=expected_data,
+                                                     section='captures')
+        self.assertEqual(get_capture_controller().get_total_captures(), number_test_images)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('picamera_server.views.capture_mode_view.render_template')
+    def test_get_from_filter(self, render_template_mock: MagicMock) -> None:
+        """
+        Test the get endpoint with page number and from filter
+
+        :param render_template_mock: MagicMock of flask render_template
+        :return:
+        """
+        # Mock and data
+        render_template_mock.side_effect = render_template
+        mock_datetime_created = datetime(year=2020, month=1, day=1, hour=1, minute=1, second=1)
+        datetime_created_frontend_str = mock_datetime_created.strftime(FRONTEND_TS_FORMAT)
+
+        # Images filtered out
+        create_test_captured_images(10, mock_datetime_created + timedelta(minutes=-1))
+        number_test_images = 15
+        total_pages = math.ceil(number_test_images / self.app.config['ITEMS_PER_PAGE'])
+        created_images = create_test_captured_images(number_test_images, mock_datetime_created)
+        expected_grids = get_captures_grids(created_images[:self.app.config['ITEMS_PER_PAGE']])
+        expected_data = {
+            'captures_grids': expected_grids,
+            'total_pages': total_pages,
+            'total_captures': number_test_images,
+            'current_page': 1,
+            'date_from': datetime_created_frontend_str,
+            'date_until': ''
+        }
+        total_db_captures = 25
+
+        # When
+        endpoint = url_for('capture_mode.ui_captures_paginated',
+                           page_number=1,
+                           datetimeFrom=datetime_created_frontend_str)
+        response = self.client.get(endpoint)
+
+        # Then
+        render_template_mock.assert_called_once_with(TEMPLATES[UI_CAPTURES_PAGINATED],
+                                                     data=expected_data,
+                                                     section='captures')
+        self.assertEqual(get_capture_controller().get_total_captures(), total_db_captures)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('picamera_server.views.capture_mode_view.render_template')
+    def test_get_until_filter(self, render_template_mock: MagicMock) -> None:
+        """
+        Test the get endpoint with page number and from filter
+
+        :param render_template_mock: MagicMock of flask render_template
+        :return:
+        """
+        # Mock and data
+        render_template_mock.side_effect = render_template
+        mock_datetime_created = datetime(year=2020, month=1, day=1, hour=1, minute=1, second=1)
+        datetime_until_filtered = mock_datetime_created + timedelta(minutes=1)
+        datetime_until_frontend_str = datetime_until_filtered.strftime(FRONTEND_TS_FORMAT)
+
+        # Images filtered out
+        create_test_captured_images(10, datetime_until_filtered)
+
+        number_test_images = 15
+        total_pages = math.ceil(number_test_images / self.app.config['ITEMS_PER_PAGE'])
+        created_images = create_test_captured_images(number_test_images, mock_datetime_created)
+        expected_grids = get_captures_grids(created_images[:self.app.config['ITEMS_PER_PAGE']])
+        expected_data = {
+            'captures_grids': expected_grids,
+            'total_pages': total_pages,
+            'total_captures': number_test_images,
+            'current_page': 1,
+            'date_from': '',
+            'date_until': datetime_until_frontend_str
+        }
+        total_db_captures = 25
+
+        # When
+        endpoint = url_for('capture_mode.ui_captures_paginated',
+                           page_number=1,
+                           datetimeUntil=datetime_until_frontend_str)
+        response = self.client.get(endpoint)
+
+        # Then
+        render_template_mock.assert_called_once_with(TEMPLATES[UI_CAPTURES_PAGINATED],
+                                                     data=expected_data,
+                                                     section='captures')
+        self.assertEqual(get_capture_controller().get_total_captures(), total_db_captures)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('picamera_server.views.capture_mode_view.render_template')
+    def test_get_from_and_until_filter(self, render_template_mock: MagicMock) -> None:
+        """
+        Test the get endpoint with page number and from filter
+
+        :param render_template_mock: MagicMock of flask render_template
+        :return:
+        """
+        # Mock and data
+        render_template_mock.side_effect = render_template
+        mock_datetime_created = datetime(year=2020, month=1, day=1, hour=1, minute=1, second=1)
+        datetime_from_filtered = mock_datetime_created + timedelta(minutes=-1)
+        datetime_until_filtered = mock_datetime_created + timedelta(minutes=1)
+        datetime_until_frontend_str = datetime_until_filtered.strftime(FRONTEND_TS_FORMAT)
+        datetime_from_frontend_str = datetime_from_filtered.strftime(FRONTEND_TS_FORMAT)
+
+        # Images filtered out
+        create_test_captured_images(10, mock_datetime_created + timedelta(minutes=2))
+        create_test_captured_images(10, mock_datetime_created + timedelta(minutes=-2))
+
+        number_test_images = 15
+        total_pages = math.ceil(number_test_images / self.app.config['ITEMS_PER_PAGE'])
+        created_images = create_test_captured_images(number_test_images, mock_datetime_created)
+        expected_grids = get_captures_grids(created_images[:self.app.config['ITEMS_PER_PAGE']])
+        expected_data = {
+            'captures_grids': expected_grids,
+            'total_pages': total_pages,
+            'total_captures': number_test_images,
+            'current_page': 1,
+            'date_from': datetime_from_frontend_str,
+            'date_until': datetime_until_frontend_str
+        }
+        total_db_captures = 35
+
+        # When
+        endpoint = url_for('capture_mode.ui_captures_paginated',
+                           page_number=1,
+                           datetimeFrom=datetime_from_frontend_str,
+                           datetimeUntil=datetime_until_frontend_str)
+        response = self.client.get(endpoint)
+
+        # Then
+        render_template_mock.assert_called_once_with(TEMPLATES[UI_CAPTURES_PAGINATED],
+                                                     data=expected_data,
+                                                     section='captures')
+        self.assertEqual(get_capture_controller().get_total_captures(), total_db_captures)
+        self.assertEqual(response.status_code, 200)

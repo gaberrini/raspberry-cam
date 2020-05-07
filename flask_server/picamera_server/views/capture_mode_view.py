@@ -184,9 +184,9 @@ def ui_captures_paginated(page_number: int = 1):
     date_from = format_timestamp(request.args.get('datetimeFrom', ''))
     date_until = format_timestamp(request.args.get('datetimeUntil', ''))
     if date_from:
-        query = query.filter(CapturedImage.created_at > date_from)
+        query = query.filter(CapturedImage.created_at >= date_from)
     if date_until:
-        query = query.filter(CapturedImage.created_at < date_until)
+        query = query.filter(CapturedImage.created_at <= date_until)
     db_captures = query.paginate(int(page_number), current_app.config['ITEMS_PER_PAGE'], False)
 
     template_captures_grids = get_captures_grids(db_captures.items)
