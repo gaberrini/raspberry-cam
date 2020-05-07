@@ -21,7 +21,7 @@ ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config/',
     UI_CAPTURES_PAGINATED_DEFAULT: '/camera/ui/captures/',
     UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>/',
-    GET_CAPTURED_IMAGE: '/camera/capture/<relative_path>/',
+    GET_CAPTURED_IMAGE: '/camera/captured/image/',
     SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval/',
     SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode/',
     REMOVE_ALL_CAPTURES: '/camera/captures/remove/'
@@ -203,16 +203,22 @@ def ui_captures_paginated(page_number: int = 1):
 
 
 @capture_mode.route(ENDPOINTS[GET_CAPTURED_IMAGE], methods=['GET'])
-def get_captured_image(relative_path: str):
+def get_captured_image():
     """
     GET
+    parameters:
+        -   name: relative_path
+            type: str
+            in: query
+            required: false
+            description: Relative path of the captured image
     responses:
         200:
             description: Return a the file with that relative path in CAPTURES_DIR.
         404:
             description: File not found
-    :param relative_path: relative to CAPTURES_DIR
     :return:
     """
     # Replace for windows testing env
+    relative_path = request.args.get('relative_path', '')
     return send_from_directory(current_app.config['CAPTURES_DIR'], relative_path.replace('\\', '/'))

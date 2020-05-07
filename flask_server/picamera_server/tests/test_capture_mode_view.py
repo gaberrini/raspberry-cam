@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
-from flask import render_template, abort, redirect, url_for
+from flask import render_template, abort, redirect, url_for, send_from_directory
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
@@ -326,7 +326,6 @@ class TestCaptureModeView(BaseTestClass):
         :return:
         """
         # Mock
-        # Mock
         mock_abort.side_effect = abort
         mock_capture_controller = MagicMock()
         mock_capture_controller.remove_all_captures.side_effect = Exception('Test')
@@ -339,6 +338,29 @@ class TestCaptureModeView(BaseTestClass):
         self.assertEqual(500, response.status_code)
         self.assertIn('Unexpected error', str(response.data))
         mock_abort.assert_called_once_with(500, 'Unexpected error')
+
+    @patch('picamera_server.views.capture_mode_view.send_from_directory')
+    def test_get_captured_image(self, mock_send_from_directory: MagicMock):
+        """
+        Test the get of a captured image from directory
+
+        :param mock_send_from_directory: Mock of send_from_directory
+        :return:
+        """
+        # Mock and data
+        created_images = create_test_captured_images()
+        mock_send_from_directory.side_effect = send_from_directory
+
+        # When
+        response = self.client.get(url_for('capture_mode.get_captured_image',
+                                           relative_path=created_images[0].relative_path))
+
+        # Validation
+        self.assertEqual(200, response.status_code)
+        mock_send_from_directory.assert_called_once_with(self.app.config['CAPTURES_DIR'],
+                                                         created_images[0].relative_path.replace('\\', '/'))
+        self.assertEqual(response.mimetype, 'image/jpeg')
+
 
 
 class TestCaptureModeViewPagination(BaseTestClass):
