@@ -174,10 +174,9 @@ def ui_captures_paginated(page_number: int = 1):
 
     template_data = {
         'captures_grids': template_captures_grids,
+        'total_pages': db_captures.pages,
         'total_captures': db_captures.total,
-        'current_page': db_captures.page,
-        'next_page': db_captures.next_num,
-        'prev_page': db_captures.prev_num
+        'current_page': db_captures.page
     }
 
     return render_template(TEMPLATES[UI_CAPTURES_PAGINATED], data=template_data, section='captures')
