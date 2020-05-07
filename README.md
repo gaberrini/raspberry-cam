@@ -27,7 +27,9 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
 
 # Server features
 
-The server is planned to have:
+**THE FRONTEND IS INTENDED TO BE USED WITH GOOGLE CHROME**
+
+The server have:
 
 * [Live stream](#live-stream)
 * [Capturing mode](#capturing-mode)
@@ -42,6 +44,7 @@ The capturing mode will store captures from the camera every X seconds while it'
 
 In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/captures/config` you will find the configuration and management section for the capturing mode
 
+In the endpoint `{SERVER_HOST}:{SERVER_PORT}/camera/ui/captures/` you will find the captures, and you can apply datetime filters defining from date and until date.
 
 # System setup
 
