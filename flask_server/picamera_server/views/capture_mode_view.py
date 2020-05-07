@@ -1,6 +1,6 @@
 from picamera_server.models import CapturedImage
 from picamera_server.camera.capture_controller import get_capture_controller
-from picamera_server.views.helpers.captures import get_captures_grids, format_timestamp, DB_TS
+from picamera_server.views.helpers.captures import get_captures_grids, format_timestamp, FRONTEND_TS
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app, send_from_directory
 from jinja2 import TemplateNotFound
 
@@ -195,8 +195,8 @@ def ui_captures_paginated(page_number: int = 1):
         'total_pages': db_captures.pages,
         'total_captures': db_captures.total,
         'current_page': db_captures.page,
-        'date_from': format_timestamp(date_from, DB_TS),
-        'date_until': format_timestamp(date_until, DB_TS)
+        'date_from': format_timestamp(date_from, FRONTEND_TS),
+        'date_until': format_timestamp(date_until, FRONTEND_TS)
     }
 
     return render_template(TEMPLATES[UI_CAPTURES_PAGINATED], data=template_data, section='captures')

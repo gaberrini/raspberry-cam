@@ -32,20 +32,20 @@ def get_captures_grids(captures: List[CapturedImage], grid_size: int = 4) -> Lis
 
 
 def format_timestamp(timestamp: str,
-                     format_origin: str = FRONTEND_TS) -> str:
+                     final_format: str = DB_TS) -> str:
     """
     Format a str timestamp, from a Frontend format to database format, and backwards
 
     If the timestamp format is invalid, return empty string
 
     :param timestamp:
-    :param format_origin:
+    :param final_format:
     :return:
     """
     try:
         # From Frontend Format to DB or backwards
-        source_format = FRONTEND_TS_FORMAT if format_origin == FRONTEND_TS else DB_TS_FORMAT
-        final_format = DB_TS_FORMAT if format_origin == FRONTEND_TS else FRONTEND_TS_FORMAT
+        source_format = FRONTEND_TS_FORMAT if final_format == DB_TS else DB_TS_FORMAT
+        final_format = DB_TS_FORMAT if final_format == DB_TS else FRONTEND_TS_FORMAT
         input_date = datetime.strptime(timestamp, source_format)
         formatted_date = input_date.strftime(final_format)
     except ValueError:
