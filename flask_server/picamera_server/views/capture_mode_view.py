@@ -1,3 +1,4 @@
+from typing import Optional
 from picamera_server.models import CapturedImage
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.views.helpers.captures import get_captures_grids
@@ -13,6 +14,8 @@ FORM_STATUS = 'status'
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 UI_CAPTURES_PAGINATED_DEFAULT = 'UI_CAPTURES_PAGINATED_DEFAULT'
 UI_CAPTURES_PAGINATED = 'UI_CAPTURES_PAGINATED'
+UI_CAPTURES_PAGINATED_FILTERED_FROM = 'UI_CAPTURES_PAGINATED_FILTERED_FROM'
+UI_CAPTURES_PAGINATED_FILTERED = 'UI_CAPTURES_PAGINATED_FILTERED'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 REMOVE_ALL_CAPTURES = 'REMOVE_ALL_CAPTURES'
@@ -21,6 +24,8 @@ ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config',
     UI_CAPTURES_PAGINATED_DEFAULT: '/camera/ui/captures/',
     UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>',
+    UI_CAPTURES_PAGINATED_FILTERED_FROM: '/camera/ui/captures/<page_number>/<date_from>/',
+    UI_CAPTURES_PAGINATED_FILTERED: '/camera/ui/captures/<page_number>/<date_from>/<date_until>/',
     GET_CAPTURED_IMAGE: '/camera/capture/<relative_path>',
     SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval',
     SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode',
@@ -152,7 +157,9 @@ def remove_all_captures():
 
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT], methods=['GET'])
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED], methods=['GET'])
-def ui_captures_paginated(page_number: int = 1):
+@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_FILTERED_FROM], methods=['GET'])
+@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_FILTERED], methods=['GET'])
+def ui_captures_paginated(page_number: int = 1, date_from: Optional[str] = None, date_until: Optional[str] = None):
     """
     GET
     parameters:
@@ -161,17 +168,34 @@ def ui_captures_paginated(page_number: int = 1):
             in: path
             required: false
             description: Value of page to retrieve
+        -   name: date_from
+            type: str
+            in: path
+            required: false
+            description: Date from to filter images DateTime format
+        -   name: date_until
+            type: int
+            in: path
+            required: false
+            description: Date until to filter images DateTime format
     responses:
         200:
             description: GUI to Show the captures paginated
 
+    :param date_until:
+    :param date_from:
     :param page_number:
     :return:
     """
-    items_per_page = current_app.config['ITEMS_PER_PAGE']
-    db_captures = CapturedImage.query.paginate(int(page_number), items_per_page, False)
-    template_captures_grids = get_captures_grids(db_captures.items)
+    # Create query and apply filters
+    query = CapturedImage.query
+    if date_from:
+        query = query.filter(CapturedImage.created_at > date_from)
+    if date_until:
+        query = query.filter(CapturedImage.created_at < date_until)
+    db_captures = query.paginate(int(page_number), current_app.config['ITEMS_PER_PAGE'], False)
 
+    template_captures_grids = get_captures_grids(db_captures.items)
     template_data = {
         'captures_grids': template_captures_grids,
         'total_pages': db_captures.pages,

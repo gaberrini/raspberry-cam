@@ -1,3 +1,6 @@
+/*
+* Images and Image zoom
+*/
 /* The grid: Four equal columns that floats next to each other */
 .column {
   float: left;
@@ -50,6 +53,9 @@
   cursor: pointer;
 }
 
+/*
+* Pagination section
+*/
 .pagination a {
   color: black;
   float: left;
@@ -66,4 +72,12 @@
 .pagination a:hover:not(.active) {
   background-color: #ddd;
   border-radius: 5px;
+}
+
+/*
+* Filter by date section
+*/
+.filter-date-form .row {
+  margin-right: 0;
+  margin-left: 0;
 }

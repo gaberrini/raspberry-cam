@@ -9,6 +9,9 @@
     <div class="row">
         <p>Found <strong>{{ data.total_captures }} captures</strong>. Total <strong>{{ data.total_pages }}</strong> pages</p>
     </div>
+
+    {% include 'camera/ui/captures/filter_captured_images_by_date.html' %}
+
     <!-- The grid: four columns -->
     {% for captures_grid in data.captures_grids %}
     <div class="row">

@@ -25,3 +25,10 @@ document.body.addEventListener("keydown", (event) => {
         expandedImgContainer.style.display = 'none';
     }
 });
+
+// Get with date filters
+function getFilteredByDate(){
+    let datetimeFrom = document.getElementById('datetime-from-input');
+    let datetimeUntil = document.getElementById('datetime-until-input');
+
+}
