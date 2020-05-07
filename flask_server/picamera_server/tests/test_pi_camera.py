@@ -5,11 +5,11 @@ import sys
 import io
 from unittest.mock import patch, MagicMock
 from importlib import reload
-from flask import Response
+from flask import Response, url_for
 
 import picamera_server.camera.pi_camera as picamera
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.camera_view import ENDPOINTS, VIDEO_FRAME, MIME_TYPE_MULTIPART_FRAME, get_camera_controller
+from picamera_server.views.camera_view import MIME_TYPE_MULTIPART_FRAME, get_camera_controller
 from picamera_server.camera.base_camera import Camera
 from picamera_server.camera.test_camera import TestCamera
 from picamera_server.camera.camera_controllers import set_camera_class, init_camera_controller
@@ -118,7 +118,7 @@ class TestPiCamera(BaseTestClass):
         # Get frame of TestCamera is used in the _mock_camera_capture method
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
-            response = self.client.get(ENDPOINTS[VIDEO_FRAME])
+            response = self.client.get(url_for('camera.video_frame'))
 
             # Validation
             mock_response.assert_called_once_with(test_generator,

@@ -12,14 +12,13 @@ from jinja2 import TemplateNotFound
 from flask import render_template, abort, redirect, url_for, send_from_directory
 from picamera_server.models import CapturedImage
 from picamera_server.tests.base_test_class import BaseTestClass
-from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CONFIG_CAPTURE_MODE,\
-    SET_CAPT_INTERVAL_VALUE, FORM_STATUS, SET_STATUS_CAPTURE_MODE, FORM_CAPTURE_INTERVAL, REMOVE_ALL_CAPTURES,\
-    UI_CAPTURES_PAGINATED_DEFAULT, UI_CAPTURES_PAGINATED
+from picamera_server.views.capture_mode_view import TEMPLATES, UI_CONFIG_CAPTURE_MODE, FORM_STATUS,\
+    FORM_CAPTURE_INTERVAL, UI_CAPTURES_PAGINATED
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.camera.test_camera import TestCamera
 from picamera_server.tests.helpers.captured_image import create_test_captured_images, captured_images_files
-from picamera_server.views.helpers.captures import get_captures_grids, FRONTEND_TS_FORMAT, DB_TS_FORMAT
+from picamera_server.views.helpers.captures import get_captures_grids, FRONTEND_TS_FORMAT
 
 
 class TestCaptureModeView(BaseTestClass):
@@ -47,18 +46,18 @@ class TestCaptureModeView(BaseTestClass):
         expected_data = capture_controller.get_capture_controller_status()
         expected_section = 'capture config'
         expected_edit_interval_form_xpath = '//form[@action="{}" and' \
-                                            ' @method="post"]'.format(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
-        expected_delete_form_xpath = '//form[@action="{}" and @method="post"]'.format(ENDPOINTS[REMOVE_ALL_CAPTURES])
+                                            ' @method="post"]'.format(url_for('capture_mode.set_capt_interval_value'))
+        expected_delete_form_xpath = '//form[@action="{}" and @method="post"]'.format(url_for('capture_mode.remove_all_captures'))
         expected_input_xpath = '//input[@min={} and @max={} and' \
                                ' @value={} and @name="{}"]'.format(capture_controller.MIN_CAPTURE_INTERVAL,
                                                                    capture_controller.MAX_CAPTURE_INTERVAL,
                                                                    capture_controller.CAPTURE_INTERVAL,
                                                                    FORM_CAPTURE_INTERVAL)
         expected_input_status_xpath = '//input[@name="{}" and @value="true"]'.format(FORM_STATUS)
-        expected_all_captures_button_xpath = '//a[@href="{}"]'.format(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT])
+        expected_all_captures_button_xpath = '//a[@href="{}"]'.format(url_for('capture_mode.ui_captures_paginated'))
 
         # When
-        response = self.client.get(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+        response = self.client.get(url_for('capture_mode.ui_config_capture_mode'))
 
         # Validation
         html_parser = html.fromstring(str(response.data))
@@ -89,7 +88,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_abort.side_effect = abort
 
         # When
-        response = self.client.get(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+        response = self.client.get(url_for('capture_mode.ui_config_capture_mode'))
 
         # Validation
         self.assertEqual(404, response.status_code)
@@ -108,7 +107,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_abort.side_effect = abort
 
         # When
-        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
+        response = self.client.post(url_for('capture_mode.set_capt_interval_value'))
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -129,7 +128,7 @@ class TestCaptureModeView(BaseTestClass):
         data = {FORM_CAPTURE_INTERVAL: get_capture_controller().MIN_CAPTURE_INTERVAL - 1}
 
         # When
-        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
+        response = self.client.post(url_for('capture_mode.set_capt_interval_value'), data=data)
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -150,7 +149,7 @@ class TestCaptureModeView(BaseTestClass):
         data = {FORM_CAPTURE_INTERVAL: get_capture_controller().MAX_CAPTURE_INTERVAL + 1}
 
         # When
-        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
+        response = self.client.post(url_for('capture_mode.set_capt_interval_value'), data=data)
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -175,7 +174,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_get_capture_controller.return_value = mock_capture_controller
 
         # When
-        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE])
+        response = self.client.post(url_for('capture_mode.set_capt_interval_value'))
 
         # Validation
         self.assertEqual(500, response.status_code)
@@ -194,10 +193,10 @@ class TestCaptureModeView(BaseTestClass):
         redirect_mock.side_effect = redirect
         test_interval = 10
         data = {FORM_CAPTURE_INTERVAL: test_interval}
-        expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+        expected_element = '//a[@href="{}"]'.format(url_for('capture_mode.ui_config_capture_mode'))
 
         # When
-        response = self.client.post(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], data=data)
+        response = self.client.post(url_for('capture_mode.set_capt_interval_value'), data=data)
 
         # Validation
         html_tree = html.fromstring(str(response.data))
@@ -217,7 +216,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_abort.side_effect = abort
 
         # When
-        response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE])
+        response = self.client.post(url_for('capture_mode.set_status_capture_mode'))
 
         # Validation
         self.assertEqual(400, response.status_code)
@@ -246,7 +245,7 @@ class TestCaptureModeView(BaseTestClass):
 
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
-            response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data={FORM_STATUS: 'true'})
+            response = self.client.post(url_for('capture_mode.set_status_capture_mode'), data={FORM_STATUS: 'true'})
 
             # Validation 1
             self.assertEqual(302, response.status_code)
@@ -254,7 +253,7 @@ class TestCaptureModeView(BaseTestClass):
             time.sleep(3)
 
             # When 2
-            response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data={FORM_STATUS: 'false'})
+            response = self.client.post(url_for('capture_mode.set_status_capture_mode'), data={FORM_STATUS: 'false'})
 
             # Validation 2
             self.assertEqual(302, response.status_code)
@@ -285,7 +284,7 @@ class TestCaptureModeView(BaseTestClass):
         data = {FORM_STATUS: 'true'}
 
         # When
-        response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data=data)
+        response = self.client.post(url_for('capture_mode.set_status_capture_mode'), data=data)
 
         # Validation
         self.assertEqual(500, response.status_code)
@@ -302,11 +301,11 @@ class TestCaptureModeView(BaseTestClass):
         """
         # Mock and data
         redirect_mock.side_effect = redirect
-        expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
+        expected_element = '//a[@href="{}"]'.format(url_for('capture_mode.ui_config_capture_mode'))
         create_test_captured_images(5)
 
         # When
-        response = self.client.post(ENDPOINTS[REMOVE_ALL_CAPTURES])
+        response = self.client.post(url_for('capture_mode.remove_all_captures'))
 
         # Validation
         html_tree = html.fromstring(str(response.data))
@@ -332,7 +331,7 @@ class TestCaptureModeView(BaseTestClass):
         mock_get_capture_controller.return_value = mock_capture_controller
 
         # When
-        response = self.client.post(ENDPOINTS[REMOVE_ALL_CAPTURES])
+        response = self.client.post(url_for('capture_mode.remove_all_captures'))
 
         # Validation
         self.assertEqual(500, response.status_code)
@@ -360,7 +359,6 @@ class TestCaptureModeView(BaseTestClass):
         mock_send_from_directory.assert_called_once_with(self.app.config['CAPTURES_DIR'],
                                                          created_images[0].relative_path.replace('\\', '/'))
         self.assertEqual(response.mimetype, 'image/jpeg')
-
 
 
 class TestCaptureModeViewPagination(BaseTestClass):
@@ -398,7 +396,7 @@ class TestCaptureModeViewPagination(BaseTestClass):
         }
 
         # When
-        response = self.client.get(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT])
+        response = self.client.get(url_for('capture_mode.ui_captures_paginated'))
 
         # Then
         render_template_mock.assert_called_once_with(TEMPLATES[UI_CAPTURES_PAGINATED],

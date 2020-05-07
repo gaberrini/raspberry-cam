@@ -4,12 +4,12 @@ Test camera view
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
-from flask import render_template, abort, Response
+from flask import render_template, abort, Response, url_for
 from picamera_server.tests.base_test_class import BaseTestClass
 from picamera_server.camera.base_camera import Camera
 from picamera_server.camera.test_camera import TestCamera
-from picamera_server.views.camera_view import ENDPOINTS, TEMPLATES, UI_CAMERA_STREAM, VIDEO_FRAME,\
-    MIME_TYPE_MULTIPART_FRAME, get_camera_controller
+from picamera_server.views.camera_view import TEMPLATES, UI_CAMERA_STREAM, MIME_TYPE_MULTIPART_FRAME,\
+    get_camera_controller
 
 
 class TestCameraView(BaseTestClass):
@@ -24,10 +24,10 @@ class TestCameraView(BaseTestClass):
         """
         # Mock and data
         mock_render_template.side_effect = render_template
-        img_source_element_xpath = '//img[@src="{}"]'.format(ENDPOINTS[VIDEO_FRAME])
+        img_source_element_xpath = '//img[@src="{}"]'.format(url_for('camera.video_frame'))
 
         # When
-        response = self.client.get(ENDPOINTS[UI_CAMERA_STREAM])
+        response = self.client.get(url_for('camera.ui_camera_stream'))
 
         # Validation
         html_tree = html.fromstring(str(response.data))
@@ -52,7 +52,7 @@ class TestCameraView(BaseTestClass):
         mock_abort.side_effect = abort
 
         # When
-        response = self.client.get(ENDPOINTS[UI_CAMERA_STREAM])
+        response = self.client.get(url_for('camera.ui_camera_stream'))
 
         # Validation
         self.assertEqual(404, response.status_code)
@@ -83,7 +83,7 @@ class TestCameraView(BaseTestClass):
 
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
-            response = self.client.get(ENDPOINTS[VIDEO_FRAME])
+            response = self.client.get(url_for('camera.video_frame'))
 
             # Validation
             mock_response.assert_called_once_with(test_generator,
@@ -115,7 +115,7 @@ class TestCameraView(BaseTestClass):
         expected_multipart_frame = Camera._get_multipart_frame(test_frames[0])
 
         # When
-        response = self.client.get(ENDPOINTS[VIDEO_FRAME])
+        response = self.client.get(url_for('camera.video_frame'))
 
         # Validation
         response_iterator = response.iter_encoded()
