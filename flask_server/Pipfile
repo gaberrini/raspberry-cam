@@ -11,6 +11,7 @@ coverage = "*"
 flask = "*"
 picamera = {version = "*",sys_platform = "== 'linux'"}
 flask-sqlalchemy = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"

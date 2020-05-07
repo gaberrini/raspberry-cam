@@ -1,7 +1,7 @@
 from picamera_server.models import CapturedImage
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.views.helpers.captures import get_captures_grids
-from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app
+from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app, send_from_directory
 from jinja2 import TemplateNotFound
 
 
@@ -16,10 +16,12 @@ UI_CAPTURES_PAGINATED = 'UI_CAPTURES_PAGINATED'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 REMOVE_ALL_CAPTURES = 'REMOVE_ALL_CAPTURES'
+GET_CAPTURED_IMAGE = 'GET_CAPTURED_IMAGE'
 ENDPOINTS = {
     UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config',
     UI_CAPTURES_PAGINATED_DEFAULT: '/camera/ui/captures/',
     UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>',
+    GET_CAPTURED_IMAGE: '/camera/capture/<relative_path>',
     SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval',
     SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode',
     REMOVE_ALL_CAPTURES: '/camera/captures/remove'
@@ -152,7 +154,16 @@ def remove_all_captures():
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED], methods=['GET'])
 def ui_captures_paginated(page_number: int = 1):
     """
-    Show the captures paginated
+    GET
+    parameters:
+        -   name: page_number
+            type: int
+            in: path
+            required: false
+            description: Value of page to retrieve
+    responses:
+        200:
+            description: GUI to Show the captures paginated
 
     :param page_number:
     :return:
@@ -170,3 +181,19 @@ def ui_captures_paginated(page_number: int = 1):
     }
 
     return render_template(TEMPLATES[UI_CAPTURES_PAGINATED], data=template_data, section='captures')
+
+
+@capture_mode.route(ENDPOINTS[GET_CAPTURED_IMAGE], methods=['GET'])
+def get_captured_image(relative_path: str):
+    """
+    GET
+    responses:
+        200:
+            description: Return a the file with that relative path in CAPTURES_DIR.
+        404:
+            description: File not found
+    :param relative_path: relative to CAPTURES_DIR
+    :return:
+    """
+    # Replace for windows testing env
+    return send_from_directory(current_app.config['CAPTURES_DIR'], relative_path.replace('\\', '/'))

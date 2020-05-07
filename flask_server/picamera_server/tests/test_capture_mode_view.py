@@ -2,6 +2,8 @@
 Test camera view
 """
 import time
+import shutil
+import os
 from lxml import html
 from unittest.mock import patch, MagicMock
 from jinja2 import TemplateNotFound
@@ -14,10 +16,18 @@ from picamera_server.views.capture_mode_view import ENDPOINTS, TEMPLATES, UI_CON
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.camera.camera_controllers import get_camera_controller
 from picamera_server.camera.test_camera import TestCamera
-from picamera_server.tests.helpers.feeder_captured_image import create_test_captured_images
+from picamera_server.tests.helpers.captured_image import create_test_captured_images, captured_images_files
 
 
 class TestCaptureModeView(BaseTestClass):
+
+    def setUp(self) -> None:
+        self.db.create_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
+
+    def tearDown(self) -> None:
+        self.db.drop_all()
+        shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
     @patch('picamera_server.views.capture_mode_view.render_template')
     def test_get_ui_config_capture_mode(self, mock_render_template: MagicMock):
@@ -222,15 +232,13 @@ class TestCaptureModeView(BaseTestClass):
         :return:
         """
         # Mock
-        # Lets kill the capture thread with an exception
+        # Lets kill the capture thread with an exception, after 3 sleeps it will stop, so it will store 4 images
         time_mock.sleep.side_effect = [time.sleep, time.sleep, time.sleep, Exception('Test')]
         redirect_mock.side_effect = redirect
-        capture_controller = get_capture_controller()
         expected_images = 4
-        capture_interval = 0
-        sleep_time = 3
         test_frames = get_camera_controller().frames + [get_camera_controller().frames[0]]
-        capture_controller.CAPTURE_INTERVAL = capture_interval
+
+        get_capture_controller().CAPTURE_INTERVAL = 0
 
         with patch.object(TestCamera, 'get_frame', side_effect=test_frames) as _:
             # When
@@ -239,7 +247,7 @@ class TestCaptureModeView(BaseTestClass):
             # Validation 1
             self.assertEqual(302, response.status_code)
             self.assertEqual(get_capture_controller().CAPTURING_STATUS, True)
-            time.sleep(sleep_time)
+            time.sleep(3)
 
             # When 2
             response = self.client.post(ENDPOINTS[SET_STATUS_CAPTURE_MODE], data={FORM_STATUS: 'false'})
@@ -248,12 +256,12 @@ class TestCaptureModeView(BaseTestClass):
             self.assertEqual(302, response.status_code)
             self.assertEqual(get_capture_controller().CAPTURING_STATUS, False)
             self.assertEqual(get_capture_controller().CAPTURING_THREAD, None)
-            captures = CapturedImage.query.all()
-            self.assertEqual(len(captures), expected_images)
-            self.assertEqual(captures[0].image, test_frames[0])
-            self.assertEqual(captures[1].image, test_frames[1])
-            self.assertEqual(captures[2].image, test_frames[2])
-            self.assertEqual(captures[3].image, test_frames[0])
+            db_captures = CapturedImage.query.all()
+            db_captures_files_paths = [os.path.join(self.app.config['CAPTURES_DIR'], capture.relative_path)
+                                       for capture in db_captures]
+            self.assertEqual(len(db_captures), expected_images)
+            self.assertEqual(db_captures_files_paths, captured_images_files(),
+                             'The number of files in db is different than the number stored of files')
 
     @patch('picamera_server.views.capture_mode_view.get_capture_controller')
     @patch('picamera_server.views.capture_mode_view.abort')
@@ -288,7 +296,7 @@ class TestCaptureModeView(BaseTestClass):
         :param redirect_mock: MagicMock of flask redirect
         :return:
         """
-        # Mock
+        # Mock and data
         redirect_mock.side_effect = redirect
         expected_element = '//a[@href="{}"]'.format(ENDPOINTS[UI_CONFIG_CAPTURE_MODE])
         create_test_captured_images(5)
@@ -301,6 +309,7 @@ class TestCaptureModeView(BaseTestClass):
         self.assertTrue(html_tree.xpath(expected_element), 'Redirect not found')
         self.assertEqual(302, response.status_code)
         self.assertEqual(get_capture_controller().get_total_captures(), 0)
+        self.assertEqual(len(captured_images_files()), 0)
 
     @patch('picamera_server.views.capture_mode_view.get_capture_controller')
     @patch('picamera_server.views.capture_mode_view.abort')
