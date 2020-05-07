@@ -11,7 +11,7 @@
     <div class="row">
         {% for capture in captures_grid %}
         <div class="column">
-            <img src="data:image/format;base64,{{ capture.image }}" alt="{{ capture.date }}" onclick="expandCapture(this);">
+            <img src="{{ url_for('capture_mode.get_captured_image', relative_path=capture.image) }}" alt="{{ capture.date }}" onclick="expandCapture(this);">
         </div>
         {% endfor %}
     </div>
