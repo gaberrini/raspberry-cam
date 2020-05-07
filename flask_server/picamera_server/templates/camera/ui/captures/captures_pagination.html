@@ -1,0 +1,21 @@
+<div class="row justify-content-center">
+    <div class="pagination">
+        {% if data.current_page-1 >= 1 %}
+            <a href="{{ url_for('capture_mode.ui_captures_paginated', page_number=data.current_page-1, datetimeFrom=data.date_from, datetimeUntil=data.date_until) }}">&laquo;</a>
+        {% endif %}
+        {% for x in range(4, 0, -1) %}
+            {% if data.current_page-x >= 1 %}
+                <a href="{{ url_for('capture_mode.ui_captures_paginated', page_number=data.current_page-x, datetimeFrom=data.date_from, datetimeUntil=data.date_until) }}">{{ data.current_page-x }}</a>
+            {% endif %}
+        {% endfor %}
+            <a class="active" href="{{ url_for('capture_mode.ui_captures_paginated', page_number=data.current_page, datetimeFrom=data.date_from, datetimeUntil=data.date_until) }}">{{ data.current_page }}</a>
+        {% for x in range(1, 5) %}
+            {% if data.current_page+x <= data.total_pages %}
+                <a href="{{ url_for('capture_mode.ui_captures_paginated', page_number=data.current_page+x, datetimeFrom=data.date_from, datetimeUntil=data.date_until) }}">{{ data.current_page+x }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if data.current_page+1 <= data.total_pages %}
+            <a href="{{ url_for('capture_mode.ui_captures_paginated', page_number=data.current_page+1, datetimeFrom=data.date_from, datetimeUntil=data.date_until) }}">&raquo;</a>
+        {% endif %}
+    </div>
+</div>
