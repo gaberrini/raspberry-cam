@@ -29,6 +29,7 @@ class TestCaptureModeView(BaseTestClass):
         shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
     def tearDown(self) -> None:
+        self.db.session.remove()
         self.db.drop_all()
         shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
@@ -347,6 +348,7 @@ class TestCaptureModeViewPagination(BaseTestClass):
         shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
     def tearDown(self) -> None:
+        self.db.session.remove()
         self.db.drop_all()
         shutil.rmtree(self.app.config['CAPTURES_DIR'], ignore_errors=True)
 
@@ -416,6 +418,7 @@ class TestCaptureModeViewPagination(BaseTestClass):
         endpoint = url_for('capture_mode.ui_captures_paginated',
                            page_number=1,
                            datetimeFrom=datetime_created_frontend_str)
+
         response = self.client.get(endpoint)
 
         # Then
