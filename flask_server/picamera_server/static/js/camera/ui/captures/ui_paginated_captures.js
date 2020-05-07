@@ -26,9 +26,19 @@ document.body.addEventListener("keydown", (event) => {
     }
 });
 
-// Get with date filters
-function getFilteredByDate(){
-    let datetimeFrom = document.getElementById('datetime-from-input');
-    let datetimeUntil = document.getElementById('datetime-until-input');
-
+// Redirect to get apply date filters
+function getCapturesFilteredByDate(){
+    /**
+     * Redirect with the datetime filters applied.
+     * Action of button in datetime filter form
+     *
+     * @type {number}
+     */
+    let pageNumber = 1;
+    let datetimeFrom = document.getElementById('datetime-from-input').value;
+    let datetimeUntil = document.getElementById('datetime-until-input').value;
+    let capturesEndpoint = document.getElementById('capturesEndpoint').value;
+    let endpoint = `${window.location.origin}${capturesEndpoint}${pageNumber}/?datetimeFrom=${datetimeFrom}&datetimeUntil=${datetimeUntil}`;
+    window.location.replace(endpoint);
+    return false
 }

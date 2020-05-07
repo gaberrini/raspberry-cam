@@ -7,17 +7,17 @@
             <div class="row">
                 <label for="datetime-from-input" class="col-2 col-form-label">From</label>
                 <div class="col-10">
-                    <input class="form-control" type="datetime-local" id="datetime-from-input">
+                    <input class="form-control" type="datetime-local" id="datetime-from-input" value="{{ data.date_from }}">
                 </div>
             </div>
             <div class="row">
                 <label for="datetime-until-input" class="col-2 col-form-label">Until</label>
                 <div class="col-10">
-                    <input class="form-control" type="datetime-local" id="datetime-until-input">
+                    <input class="form-control" type="datetime-local" id="datetime-until-input" value="{{ data.date_until }}">
                 </div>
             </div>
             <div class="row">
-                <button type="submit" class="btn btn-primary mb-2" onclick="getFilteredByDate()">Filter captures</button>
+                <button type="submit" class="btn btn-primary mb-2" onclick="return getCapturesFilteredByDate()">Filter captures</button>
             </div>
         </div>
     </form>

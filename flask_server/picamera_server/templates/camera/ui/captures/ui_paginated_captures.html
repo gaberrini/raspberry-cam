@@ -6,6 +6,9 @@
 
 {% block body %}
 <div class="container">
+    <!-- Used to create the redirect with datetime filter -->
+    <input hidden id="capturesEndpoint" value="{{ url_for('capture_mode.ui_captures_paginated') }}">
+
     <div class="row">
         <p>Found <strong>{{ data.total_captures }} captures</strong>. Total <strong>{{ data.total_pages }}</strong> pages</p>
     </div>

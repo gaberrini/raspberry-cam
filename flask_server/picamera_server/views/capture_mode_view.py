@@ -1,7 +1,6 @@
-from typing import Optional
 from picamera_server.models import CapturedImage
 from picamera_server.camera.capture_controller import get_capture_controller
-from picamera_server.views.helpers.captures import get_captures_grids
+from picamera_server.views.helpers.captures import get_captures_grids, format_timestamp, DB_TS
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app, send_from_directory
 from jinja2 import TemplateNotFound
 
@@ -14,22 +13,18 @@ FORM_STATUS = 'status'
 UI_CONFIG_CAPTURE_MODE = 'UI_CONFIG_CAPTURE_MODE'
 UI_CAPTURES_PAGINATED_DEFAULT = 'UI_CAPTURES_PAGINATED_DEFAULT'
 UI_CAPTURES_PAGINATED = 'UI_CAPTURES_PAGINATED'
-UI_CAPTURES_PAGINATED_FILTERED_FROM = 'UI_CAPTURES_PAGINATED_FILTERED_FROM'
-UI_CAPTURES_PAGINATED_FILTERED = 'UI_CAPTURES_PAGINATED_FILTERED'
 SET_STATUS_CAPTURE_MODE = 'SET_STATUS_CAPTURE_MODE'
 SET_CAPT_INTERVAL_VALUE = 'SET_CAPT_INTERVAL_VALUE'
 REMOVE_ALL_CAPTURES = 'REMOVE_ALL_CAPTURES'
 GET_CAPTURED_IMAGE = 'GET_CAPTURED_IMAGE'
 ENDPOINTS = {
-    UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config',
+    UI_CONFIG_CAPTURE_MODE: '/camera/ui/captures/config/',
     UI_CAPTURES_PAGINATED_DEFAULT: '/camera/ui/captures/',
-    UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>',
-    UI_CAPTURES_PAGINATED_FILTERED_FROM: '/camera/ui/captures/<page_number>/<date_from>/',
-    UI_CAPTURES_PAGINATED_FILTERED: '/camera/ui/captures/<page_number>/<date_from>/<date_until>/',
-    GET_CAPTURED_IMAGE: '/camera/capture/<relative_path>',
-    SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval',
-    SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode',
-    REMOVE_ALL_CAPTURES: '/camera/captures/remove'
+    UI_CAPTURES_PAGINATED: '/camera/ui/captures/<page_number>/',
+    GET_CAPTURED_IMAGE: '/camera/capture/<relative_path>/',
+    SET_CAPT_INTERVAL_VALUE: '/camera/captures/config/capture_interval/',
+    SET_STATUS_CAPTURE_MODE: '/camera/captures/config/set_status_capture_mode/',
+    REMOVE_ALL_CAPTURES: '/camera/captures/remove/'
 }
 
 TEMPLATES = {
@@ -157,9 +152,7 @@ def remove_all_captures():
 
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT], methods=['GET'])
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED], methods=['GET'])
-@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_FILTERED_FROM], methods=['GET'])
-@capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_FILTERED], methods=['GET'])
-def ui_captures_paginated(page_number: int = 1, date_from: Optional[str] = None, date_until: Optional[str] = None):
+def ui_captures_paginated(page_number: int = 1):
     """
     GET
     parameters:
@@ -170,25 +163,26 @@ def ui_captures_paginated(page_number: int = 1, date_from: Optional[str] = None,
             description: Value of page to retrieve
         -   name: date_from
             type: str
-            in: path
+            in: query
             required: false
             description: Date from to filter images DateTime format
         -   name: date_until
             type: int
-            in: path
+            in: query
             required: false
             description: Date until to filter images DateTime format
     responses:
         200:
             description: GUI to Show the captures paginated
 
-    :param date_until:
-    :param date_from:
     :param page_number:
     :return:
     """
     # Create query and apply filters
     query = CapturedImage.query
+
+    date_from = format_timestamp(request.args.get('datetimeFrom', ''))
+    date_until = format_timestamp(request.args.get('datetimeUntil', ''))
     if date_from:
         query = query.filter(CapturedImage.created_at > date_from)
     if date_until:
@@ -200,7 +194,9 @@ def ui_captures_paginated(page_number: int = 1, date_from: Optional[str] = None,
         'captures_grids': template_captures_grids,
         'total_pages': db_captures.pages,
         'total_captures': db_captures.total,
-        'current_page': db_captures.page
+        'current_page': db_captures.page,
+        'date_from': format_timestamp(date_from, DB_TS),
+        'date_until': format_timestamp(date_until, DB_TS)
     }
 
     return render_template(TEMPLATES[UI_CAPTURES_PAGINATED], data=template_data, section='captures')
