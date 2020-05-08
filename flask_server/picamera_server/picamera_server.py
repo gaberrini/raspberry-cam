@@ -17,11 +17,13 @@ def register_blueprints(app: Flask) -> None:
     from picamera_server.views.home_view import home
     from picamera_server.views.camera_view import camera
     from picamera_server.views.capture_mode_view import capture_mode
+    from picamera_server.views.users_view import users
 
     # Register Blueprints
     app.register_blueprint(home)
     app.register_blueprint(camera)
     app.register_blueprint(capture_mode)
+    app.register_blueprint(users)
 
 
 def init_camera_controllers() -> None:
