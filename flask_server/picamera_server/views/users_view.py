@@ -5,14 +5,19 @@ from werkzeug.exceptions import NotFound
 from picamera_server import db, app
 from picamera_server.models import User
 
+USER_CLI_GROUP = 'user'
 
-users = Blueprint('users', __name__, cli_group='user')
+users = Blueprint('users', __name__, cli_group=USER_CLI_GROUP)
+
+USER_CREATE_COMMAND = 'create'
+USER_CHANGE_PASSWORD_COMMAND = 'change_password'
+USER_DELETE_COMMAND = 'delete'
 
 
-@users.cli.command('create')
+@users.cli.command(USER_CREATE_COMMAND)
 @click.argument('username', required=True)
 @click.argument('password', required=True)
-def create(username: str, password: str):
+def user_create(username: str, password: str):
     """
     Create a user
 
@@ -20,23 +25,28 @@ def create(username: str, password: str):
     :param password:
     :return:
     """
+    message = ''
     try:
         new_user = User(username=username)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        app.logger.info('User "{}" created'.format(username))
+        message = 'User "{}" created'.format(username)
+        app.logger.info(message)
     except IntegrityError as e:
         if 'UNIQUE constraint' in e.orig.args[0]:
+            message = 'Error creating user "{}", that username already exist'.format(username)
             app.logger.error('Error creating user "{}", that username already exist'.format(username))
+    finally:
+        click.echo(message)
 
 
-@users.cli.command('change_password')
+@users.cli.command(USER_CHANGE_PASSWORD_COMMAND)
 @click.argument('username', required=True)
 @click.argument('password', required=True)
 @click.argument('new_password', required=True)
 @click.argument('new_password_repeat', required=True)
-def change_password(username: str, password: str, new_password: str, new_password_repeat: str):
+def user_change_password(username: str, password: str, new_password: str, new_password_repeat: str):
     """
     Set a new password to a user
 
@@ -46,6 +56,7 @@ def change_password(username: str, password: str, new_password: str, new_passwor
     :param new_password_repeat:
     :return:
     """
+    message = ''
     try:
         user = User.query.filter_by(username=username).first_or_404()
         if not user.check_password(password):
@@ -55,29 +66,36 @@ def change_password(username: str, password: str, new_password: str, new_passwor
         user.set_password(new_password)
         db.session.add(user)
         db.session.commit()
-        app.logger.info('Password changed for user "{}"'.format(username))
-    except IntegrityError as e:
-        if 'UNIQUE constraint' in e.orig.args[0]:
-            app.logger.error('Error creating user "{}", that username already exist'.format(username))
+        message = 'Password changed for user "{}"'.format(username)
+        app.logger.info(message)
     except NotFound:
-        app.logger.error('Username "{}" not found'.format(username))
+        message = 'Username "{}" not found'.format(username)
+        app.logger.error(message)
     except ValueError as e:
-        app.logger.error('{} username "{}" not changed'.format(e, username))
+        message = '{} username "{}" not changed'.format(e, username)
+        app.logger.error(message)
+    finally:
+        click.echo(message)
 
 
-@users.cli.command('delete')
+@users.cli.command(USER_DELETE_COMMAND)
 @click.argument('username', required=True)
-def change_password(username: str):
+def user_delete(username: str):
     """
     Delete a user
 
     :param username:
     :return:
     """
+    message = ''
     try:
         user = User.query.filter_by(username=username).first_or_404()
         db.session.delete(user)
         db.session.commit()
-        app.logger.info('User "{}" deleted'.format(username))
+        message = 'User "{}" deleted'.format(username)
+        app.logger.info(message)
     except NotFound:
-        app.logger.error('Username "{}" not found'.format(username))
+        message = 'Username "{}" not found'.format(username)
+        app.logger.error(message)
+    finally:
+        click.echo(message)

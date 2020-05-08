@@ -24,6 +24,7 @@ class BaseTestClass(unittest.TestCase):
         cls.app = app
         cls.app_context = cls.app.test_request_context()
         cls.app_context.push()
+        cls.app_runner = cls.app.test_cli_runner()
         cls.db = db
         cls.client = cls.app.test_client()
         cls.db.drop_all()
