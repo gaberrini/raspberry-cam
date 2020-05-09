@@ -13,6 +13,8 @@ flask = "*"
 picamera = {version = "*",sys_platform = "== 'linux'"}
 flask-sqlalchemy = "*"
 pillow = "*"
+flask-login = "*"
+flask-wtf = "*"
 
 [requires]
 python_version = "3.7"

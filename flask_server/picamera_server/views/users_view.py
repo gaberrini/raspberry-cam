@@ -1,9 +1,11 @@
 import click
-from flask import Blueprint
+from flask import Blueprint, render_template, redirect, url_for
+from flask_login import login_user, current_user, logout_user
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound
-from picamera_server import db, app
+from picamera_server import db, app, login_manager
 from picamera_server.models import User
+from picamera_server.forms.logging_form import LoginForm
 
 USER_CLI_GROUP = 'user'
 
@@ -12,6 +14,52 @@ users = Blueprint('users', __name__, cli_group=USER_CLI_GROUP)
 USER_CREATE_COMMAND = 'create'
 USER_CHANGE_PASSWORD_COMMAND = 'change_password'
 USER_DELETE_COMMAND = 'delete'
+
+USER_LOGIN = 'login'
+USER_LOGOUT = 'logout'
+ENDPOINTS = {
+    USER_LOGIN: '/login',
+    USER_LOGOUT: '/logout'
+}
+
+TEMPLATES = {
+    USER_LOGIN: 'login.html'
+}
+
+
+@users.route(ENDPOINTS[USER_LOGIN], methods=['POST', 'GET'])
+def user_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home.ui_home'))
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+
+        if user is None or not user.check_password(form.password.data):
+            return redirect(url_for('users.user_login'))
+
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('home.ui_home'))
+
+    return render_template(TEMPLATES[USER_LOGIN], form=form)
+
+
+@users.route(ENDPOINTS[USER_LOGOUT])
+def user_logout():
+    logout_user()
+    return redirect(url_for('users.user_login'))
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> User:
+    """
+    Load the user to be used by the LoginManager
+    :param user_id:
+    :return:
+    """
+    return User.query.get(int(user_id))
 
 
 @users.cli.command(USER_CREATE_COMMAND)

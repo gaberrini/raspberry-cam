@@ -1,5 +1,6 @@
 from picamera_server.camera.camera_controllers import get_camera_controller
 from flask import Blueprint, abort, render_template, Response, stream_with_context
+from flask_login import login_required
 from jinja2 import TemplateNotFound
 
 
@@ -20,6 +21,7 @@ MIME_TYPE_MULTIPART_FRAME = 'multipart/x-mixed-replace; boundary=frame'
 
 
 @camera.route(ENDPOINTS[UI_CAMERA_STREAM], methods=['GET'])
+@login_required
 def ui_camera_stream():
     """
     GET
@@ -37,6 +39,7 @@ def ui_camera_stream():
 
 
 @camera.route(ENDPOINTS[VIDEO_FRAME], methods=['GET'])
+@login_required
 def video_frame():
     """
     Endpoint used to feed the video stream with multipart responses

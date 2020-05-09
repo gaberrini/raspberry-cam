@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="/static/css/login.css" type="text/css">
+<form action="" method="POST" novalidate>
+    <div class="login">
+        <div class="login-screen">
+            <div class="app-title">
+                <h1>Login</h1>
+            </div>
+
+            <div class="login-form">
+                {{ form.hidden_tag() }}
+
+                <div class="control-group">
+                    {{ form.username.label }}
+                    <br>
+                    <br>
+                    {{ form.username(size=32) }}
+                </div>
+
+                <div class="control-group">
+                    {{ form.password.label }}
+                    <br>
+                    <br>
+                    {{ form.password(size=32) }}
+                </div>
+
+                <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+                <p>{{ form.submit(class_="btn btn-primary btn-large btn-block") }}</p>
+                <br>
+            </div>
+        </div>
+    </div>
+</form>

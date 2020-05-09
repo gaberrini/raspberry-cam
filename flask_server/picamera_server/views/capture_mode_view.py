@@ -2,6 +2,7 @@ from picamera_server.models import CapturedImage
 from picamera_server.camera.capture_controller import get_capture_controller
 from picamera_server.views.helpers.captures import get_captures_grids, format_timestamp, FRONTEND_TS
 from flask import Blueprint, abort, render_template, request, url_for, redirect, current_app, send_from_directory
+from flask_login import login_required
 from jinja2 import TemplateNotFound
 
 
@@ -34,6 +35,7 @@ TEMPLATES = {
 
 
 @capture_mode.route(ENDPOINTS[UI_CONFIG_CAPTURE_MODE], methods=['GET'])
+@login_required
 def ui_config_capture_mode():
     """
     GET
@@ -53,6 +55,7 @@ def ui_config_capture_mode():
 
 
 @capture_mode.route(ENDPOINTS[SET_CAPT_INTERVAL_VALUE], methods=['POST'])
+@login_required
 def set_capt_interval_value():
     """
     Configure the capture interval value in seconds
@@ -93,6 +96,7 @@ def set_capt_interval_value():
 
 
 @capture_mode.route(ENDPOINTS[SET_STATUS_CAPTURE_MODE], methods=['POST'])
+@login_required
 def set_status_capture_mode():
     """
     Set the status of the capture mode,
@@ -128,6 +132,7 @@ def set_status_capture_mode():
 
 
 @capture_mode.route(ENDPOINTS[REMOVE_ALL_CAPTURES], methods=['POST'])
+@login_required
 def remove_all_captures():
     """
     Remove all the stored captures
@@ -152,6 +157,7 @@ def remove_all_captures():
 
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED_DEFAULT], methods=['GET'])
 @capture_mode.route(ENDPOINTS[UI_CAPTURES_PAGINATED], methods=['GET'])
+@login_required
 def ui_captures_paginated(page_number: int = 1):
     """
     GET
@@ -203,6 +209,7 @@ def ui_captures_paginated(page_number: int = 1):
 
 
 @capture_mode.route(ENDPOINTS[GET_CAPTURED_IMAGE], methods=['GET'])
+@login_required
 def get_captured_image():
     """
     GET

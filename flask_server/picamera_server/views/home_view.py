@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, abort
+from flask_login import login_required
 from jinja2 import TemplateNotFound
 
 
@@ -15,6 +16,7 @@ TEMPLATES = {
 
 
 @home.route(ENDPOINTS[UI_HOME])
+@login_required
 def ui_home():
     """
     GET

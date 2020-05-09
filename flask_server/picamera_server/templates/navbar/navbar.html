@@ -20,5 +20,10 @@
                 {% include 'navbar/navbar-item.html' %}
             {% endwith %}
         </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% with item_title='Log out', item_href=url_for('users.user_logout') %}
+                {% include 'navbar/navbar-item.html' %}
+            {% endwith %}
+        </ul>
     </div>
 </nav>
