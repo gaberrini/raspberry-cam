@@ -54,3 +54,4 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = TEST_SQL_LITE_DATABASE
     CAPTURES_DIR = os.path.join(FLASK_INSTANCE_FOLDER, 'tests', 'tmp')
     ITEMS_PER_PAGE = 5
+    LOGIN_DISABLED = True
