@@ -38,12 +38,12 @@ class TestPiCamera(BaseTestClass):
         :return:
         """
         # Set modules patch and reload module
+        super(TestPiCamera, cls).setUpClass()
         cls._mock_picamera()
         reload(picamera)
         set_camera_class(PiCamera)
         init_camera_controller()
         cls.mock_picamera = sys.modules['picamera']
-        super(TestPiCamera, cls).setUpClass()
 
     @classmethod
     def _mock_picamera(cls):

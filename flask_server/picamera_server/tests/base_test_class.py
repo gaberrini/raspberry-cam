@@ -1,6 +1,7 @@
 import unittest
 import shutil
 from picamera_server import app, db
+from picamera_server.picamera_server import init_camera_controllers
 
 
 class BaseTestClass(unittest.TestCase):
@@ -29,6 +30,7 @@ class BaseTestClass(unittest.TestCase):
         cls.client = cls.app.test_client()
         cls.db.drop_all()
         cls.db.create_all()
+        init_camera_controllers()
         shutil.rmtree(cls.app.config['CAPTURES_DIR'], ignore_errors=True)
 
     @classmethod
