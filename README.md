@@ -24,10 +24,19 @@ Here you can find a Web Server developed to run in a [Raspberry Pi 3 B+]. The se
             * [Development environment](#development-environment)
         * [Optional - cleanup virtualenv script](#4-optional---cleanup-virtualenv-script)
         * [Run tests with coverage script](#5-run-tests-with-coverage-script)
+* [Users management](#users-management)
+    * [Scripts for user management](#scripts-for-user-management)
+        * [Create users script](#1-create-users-script)
+        * [Change user password script](#2-change-user-password-script)
+        * [Delete user script](#3-delete-user-script)
 
 # Server features
 
 **THE FRONTEND IS INTENDED TO BE USED WITH GOOGLE CHROME**
+
+The server features are protected with [user log in](#users-management). When the user is not authenticated it will be redirected to the log in page.
+
+`{SERVER_HOST}:{SERVER_PORT}/login`
 
 The server have:
 
@@ -244,6 +253,86 @@ python3 -m pipenv run python -m coverage run -m unittest --verbose
 # Create HTML report of coverage
 python3 -m pipenv run coverage report
 python3 -m pipenv run coverage html
+```
+
+# Users management
+
+The server features are protected by user log in. To create/update/delete users, you can do it using flask commands.
+
+The flask commands are dependant on the environment variable **FLASK_APP**
+
+You can find [scripts to execute the user commands](#scripts-for-user-management)
+
+## Scripts for user management
+
+In the scripts folder you can find scripts for user management
+
+**All the scripts must be run from the parent directory**
+
+`./`
+
+**When trying to run the scripts might be possible that they don't have execution rights, you can add them to all the scripts with the following command**
+
+`chmod +x ./scripts/users/*`
+
+**The scripts must be run after running the scripts for [system setup script](#1-system-setup-script) and the [python environment setup script](#2-python-environment-setup-script)**
+
+### 1) Create users script
+
+The script to create users is located at
+
+`./scripts/users/create_user.sh`
+
+This script will receive 3 positional arguments:
+
+* username
+* password
+* password_repeat
+
+The script will execute the following commands:
+
+```
+cd ./flask_server
+export FLASK_APP=picamera_server
+python3 -m pipenv run flask user create $1 $2 $3
+```
+
+### 2) Change user password script
+
+The script to update users passwords is located at:
+
+`./scripts/users/change_password.sh`
+
+This script will receive 3 positional arguments:
+
+* username
+* password
+* password_repeat
+
+The script will execute the following commands:
+
+```
+cd ./flask_server
+export FLASK_APP=picamera_server
+python3 -m pipenv run flask user change_password $1 $2 $3
+```
+
+### 3) Delete user script
+
+The script to delete users is located at:
+
+`./scripts/users/delete_user.sh`
+
+This script will receive 1 positional arguments:
+
+* username
+
+The script will execute the following commands:
+
+```
+cd ./flask_server
+export FLASK_APP=picamera_server
+python3 -m pipenv run flask user delete $1
 ```
 
 [Raspberry Pi 3 B+]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/
