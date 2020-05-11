@@ -263,6 +263,7 @@ class TestCaptureModeView(BaseTestClass):
             db_captures_files_paths = [os.path.join(self.app.config['CAPTURES_DIR'], capture.relative_path)
                                        for capture in db_captures]
             self.assertEqual(len(db_captures), expected_images)
+            db_captures_files_paths.sort()
             self.assertEqual(db_captures_files_paths, captured_images_files(),
                              'The number of files in db is different than the number stored of files')
 

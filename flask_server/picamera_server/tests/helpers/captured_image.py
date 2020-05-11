@@ -23,7 +23,11 @@ def create_test_captured_images(number: int = 1, date: Optional[str] = None) -> 
 def captured_images_files() -> List[str]:
     """
     Check the CAPTURES_DIR and all subdirectories and return all the .jpg files found
+
+    Return the files names sorted
     :return:
     """
     glob_search_path = '{captures_dir}**/**'.format(captures_dir=app.config["CAPTURES_DIR"])
-    return [file for file in glob.glob(glob_search_path, recursive=True) if file.endswith('.jpg')]
+    files = [file for file in glob.glob(glob_search_path, recursive=True) if file.endswith('.jpg')]
+    files.sort()
+    return files
