@@ -11,12 +11,8 @@ def create_user(username: str, password: str) -> Optional[User]:
     :param password:
     :return:
     """
-    try:
-        user = User(username=username)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-    except Exception as e:
-        app.logger.exception('Error creating user {}'.format(e))
-        user = None
+    user = User(username=username)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
     return user

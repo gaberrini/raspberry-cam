@@ -46,7 +46,7 @@ def user_login():
     return render_template(TEMPLATES[USER_LOGIN], form=form)
 
 
-@users.route(ENDPOINTS[USER_LOGOUT])
+@users.route(ENDPOINTS[USER_LOGOUT], methods=['GET'])
 def user_logout():
     logout_user()
     return redirect(url_for('users.user_login'))

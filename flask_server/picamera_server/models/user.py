@@ -8,9 +8,6 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
-    def __repr__(self):
-        return '<User: {}>'.format(self.username)
-
     def set_password(self, password: str) -> None:
         """
         Set the password of the user, hash it before store to database
