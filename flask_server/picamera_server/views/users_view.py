@@ -65,16 +65,22 @@ def load_user(user_id: str) -> User:
 @users.cli.command(USER_CREATE_COMMAND)
 @click.argument('username', required=True)
 @click.argument('password', required=True)
-def user_create(username: str, password: str):
+@click.argument('password_repeat', required=True)
+def user_create(username: str, password: str, password_repeat: str):
     """
     Create a user
 
     :param username:
     :param password:
+    :param password_repeat:
     :return:
     """
     message = ''
     try:
+        if password != password_repeat:
+            message = "Input passwords don't match"
+            raise ValueError(message)
+
         new_user = User(username=username)
         new_user.set_password(password)
         db.session.add(new_user)
@@ -85,21 +91,21 @@ def user_create(username: str, password: str):
         if 'UNIQUE constraint' in e.orig.args[0]:
             message = 'Error creating user "{}", that username already exist'.format(username)
             app.logger.error('Error creating user "{}", that username already exist'.format(username))
+    except ValueError:
+        pass
     finally:
         click.echo(message)
 
 
 @users.cli.command(USER_CHANGE_PASSWORD_COMMAND)
 @click.argument('username', required=True)
-@click.argument('password', required=True)
 @click.argument('new_password', required=True)
 @click.argument('new_password_repeat', required=True)
-def user_change_password(username: str, password: str, new_password: str, new_password_repeat: str):
+def user_change_password(username: str, new_password: str, new_password_repeat: str):
     """
     Set a new password to a user
 
     :param username:
-    :param password:
     :param new_password:
     :param new_password_repeat:
     :return:
@@ -107,8 +113,6 @@ def user_change_password(username: str, password: str, new_password: str, new_pa
     message = ''
     try:
         user = User.query.filter_by(username=username).first_or_404()
-        if not user.check_password(password):
-            raise ValueError('Invalid password')
         if new_password != new_password_repeat:
             raise ValueError("Input passwords don't match")
         user.set_password(new_password)

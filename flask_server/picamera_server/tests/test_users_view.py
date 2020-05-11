@@ -28,11 +28,24 @@ class TestUsersCommands(BaseTestClass):
         :return:
         """
         # When
-        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CREATE_COMMAND, 'admin', 'admin'])
+        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CREATE_COMMAND, 'admin', 'admin', 'admin'])
 
         # Validation
         self.assertEqual(User.query.count(), 1)
         self.assertIn('created', result.output)
+
+    def test_create_user_command_password_repeat_invalid(self):
+        """
+        Test create user command
+
+        :return:
+        """
+        # When
+        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CREATE_COMMAND, 'admin', 'admin', 'admin2'])
+
+        # Validation
+        self.assertEqual(User.query.count(), 0)
+        self.assertIn("Input passwords don't match", result.output)
 
     def test_create_user_already_exist_command(self):
         """
@@ -45,7 +58,7 @@ class TestUsersCommands(BaseTestClass):
         create_user(username, password=username)
 
         # When
-        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CREATE_COMMAND, username, username])
+        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CREATE_COMMAND, username, username, username])
 
         # Validation
         self.assertEqual(User.query.count(), 1)
@@ -64,32 +77,13 @@ class TestUsersCommands(BaseTestClass):
 
         # When
         result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CHANGE_PASSWORD_COMMAND,
-                                              username, username, password_2, password_2])
+                                              username, password_2, password_2])
 
         # Validation
         self.assertIn('Password changed', result.output)
         user = User.query.filter_by(username=username).first_or_404()
         self.assertTrue(user.check_password(password_2))
         self.assertFalse(user.check_password(username))
-
-    def test_user_change_password_invalid_password(self):
-        """
-        Test change password invalid password input
-
-        :return:
-        """
-        # Data
-        username = 'test'
-        create_user(username, password=username)
-
-        # When
-        result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CHANGE_PASSWORD_COMMAND,
-                                              username, 'invalid', 'invalid', 'invalid'])
-
-        # Validation
-        self.assertIn('Invalid password', result.output)
-        user = User.query.filter_by(username=username).first_or_404()
-        self.assertTrue(user.check_password(username))
 
     def test_user_change_password_no_match(self):
         """
@@ -103,7 +97,7 @@ class TestUsersCommands(BaseTestClass):
 
         # When
         result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CHANGE_PASSWORD_COMMAND,
-                                              username, username, 'invalid', 'invalid1'])
+                                              username, 'invalid', 'invalid1'])
 
         # Validation
         self.assertIn("passwords don't match", result.output)
@@ -118,7 +112,7 @@ class TestUsersCommands(BaseTestClass):
         """
         # When
         result = self.app_runner.invoke(args=[USER_CLI_GROUP, USER_CHANGE_PASSWORD_COMMAND,
-                                              'invalid', 'invalid', 'invalid', 'invalid'])
+                                              'invalid', 'invalid', 'invalid'])
 
         # Validation
         self.assertIn("not found", result.output)
